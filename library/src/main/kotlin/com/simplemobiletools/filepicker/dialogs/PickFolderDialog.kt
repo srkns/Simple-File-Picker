@@ -79,7 +79,7 @@ class PickFolderDialog : DialogFragment(), Breadcrumbs.BreadcrumbsListener {
     private fun sendResult() {
         val intent = Intent()
         intent.data = Uri.parse(mPath)
-        targetFragment.onActivityResult(requestCode, Activity.RESULT_OK, intent)
+        targetFragment?.onActivityResult(requestCode, Activity.RESULT_OK, intent)
         dismiss()
     }
 

@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Simple File Picker</string>
+    <string name="pick_a_folder">Pick a folder</string>
 </resources>
