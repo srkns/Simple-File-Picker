@@ -1,8 +1,9 @@
 <resources>
-    <string name="smtfp_select_destination">宛先を選択</string>
+    <string name="smtfp_select_folder">Select a folder</string>
     <string name="smtfp_initial_breadcrumb">ホーム</string>
     <string name="smtfp_ok">OK</string>
     <string name="smtfp_cancel">Cancel</string>
+    <string name="smtfp_no_permission">Debug: missing Read Storage permission</string>
 
     <plurals name="smtfp_items">
         <item quantity="one">1 アイテム</item>

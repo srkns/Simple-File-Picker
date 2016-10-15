@@ -2,15 +2,19 @@ package com.simplemobiletools.filepicker.dialogs
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
 import android.view.View
+import com.simplemobiletools.filepicker.BuildConfig
 import com.simplemobiletools.filepicker.R
 import com.simplemobiletools.filepicker.adapters.ItemsAdapter
 import com.simplemobiletools.filepicker.extensions.getFilenameFromPath
+import com.simplemobiletools.filepicker.extensions.hasStoragePermission
+import com.simplemobiletools.filepicker.extensions.toast
 import com.simplemobiletools.filepicker.models.FileDirItem
 import com.simplemobiletools.filepicker.views.Breadcrumbs
 import kotlinx.android.synthetic.main.smtfp_directory_picker.view.*
@@ -38,6 +42,16 @@ class PickFolderDialog : DialogFragment(), Breadcrumbs.BreadcrumbsListener {
     lateinit var dialog: View
     var requestCode = 0
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (!context.hasStoragePermission()) {
+            if (BuildConfig.DEBUG) {
+                context.toast(R.string.smtfp_no_permission)
+            }
+            dismiss()
+        }
+    }
+
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         dialog = activity.layoutInflater.inflate(R.layout.smtfp_directory_picker, null)
         requestCode = targetRequestCode
@@ -46,7 +60,7 @@ class PickFolderDialog : DialogFragment(), Breadcrumbs.BreadcrumbsListener {
         setupBreadcrumbs()
 
         return AlertDialog.Builder(activity)
-                .setTitle(resources.getString(R.string.smtfp_select_destination))
+                .setTitle(resources.getString(R.string.smtfp_select_folder))
                 .setView(dialog)
                 .setPositiveButton(R.string.smtfp_ok) { dialog, which -> sendResult() }
                 .setNegativeButton(R.string.smtfp_cancel, null)
