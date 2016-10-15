@@ -3,12 +3,12 @@ package com.simplemobiletools.filepicker.samples.activities
 import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
-import android.support.v4.app.FragmentActivity
+import android.support.v7.app.AppCompatActivity
 import com.simplemobiletools.filepicker.dialogs.PickFolderDialog
 import com.simplemobiletools.filepicker.samples.R
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : FragmentActivity() {
+class MainActivity : AppCompatActivity() {
     val PICK_FOLDER_REQUEST_CODE = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
