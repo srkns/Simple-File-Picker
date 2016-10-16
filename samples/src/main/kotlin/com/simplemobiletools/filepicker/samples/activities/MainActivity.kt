@@ -1,16 +1,16 @@
 package com.simplemobiletools.filepicker.samples.activities
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Environment
 import android.support.v7.app.AppCompatActivity
 import com.simplemobiletools.filepicker.dialogs.PickFolderDialog
+import com.simplemobiletools.filepicker.dialogs.PickFolderDialog.PickFolderResult.DISMISS
+import com.simplemobiletools.filepicker.dialogs.PickFolderDialog.PickFolderResult.NO_PERMISSION
+import com.simplemobiletools.filepicker.extensions.toast
 import com.simplemobiletools.filepicker.samples.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
-    val PICK_FOLDER_REQUEST_CODE = 1
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -20,17 +20,19 @@ class MainActivity : AppCompatActivity() {
 
     private fun pickFolder() {
         val home = Environment.getExternalStorageDirectory().toString()
-        val dialog = PickFolderDialog.newInstance(home, true, true)
-        dialog.requestCode = PICK_FOLDER_REQUEST_CODE
-        dialog.show(supportFragmentManager, "pickfolder")
-    }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == PICK_FOLDER_REQUEST_CODE) {
-            if (resultCode == RESULT_OK && data != null) {
-
+        PickFolderDialog(this, home, listener = object : PickFolderDialog.OnPickFolderListener {
+            override fun onFail(error: PickFolderDialog.PickFolderResult) {
+                when (error) {
+                    NO_PERMISSION -> toast(R.string.no_permission)
+                    DISMISS -> toast(R.string.dialog_dismissed)
+                    else -> toast(R.string.unknown_error)
+                }
             }
-        }
-        super.onActivityResult(requestCode, resultCode, data)
+
+            override fun onSuccess(path: String) {
+                picked_folder_path.text = path
+            }
+        })
     }
 }

@@ -1,20 +1,13 @@
 package com.simplemobiletools.filepicker.dialogs
 
-import android.app.Activity
-import android.app.Dialog
 import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
-import android.support.v4.app.DialogFragment
 import android.support.v7.app.AlertDialog
+import android.view.LayoutInflater
 import android.view.View
-import com.simplemobiletools.filepicker.BuildConfig
 import com.simplemobiletools.filepicker.R
 import com.simplemobiletools.filepicker.adapters.ItemsAdapter
 import com.simplemobiletools.filepicker.extensions.getFilenameFromPath
 import com.simplemobiletools.filepicker.extensions.hasStoragePermission
-import com.simplemobiletools.filepicker.extensions.toast
 import com.simplemobiletools.filepicker.models.FileDirItem
 import com.simplemobiletools.filepicker.views.Breadcrumbs
 import kotlinx.android.synthetic.main.smtfp_directory_picker.view.*
@@ -22,49 +15,57 @@ import java.io.File
 import java.util.*
 import kotlin.comparisons.compareBy
 
-class PickFolderDialog : DialogFragment(), Breadcrumbs.BreadcrumbsListener {
+class PickFolderDialog() : Breadcrumbs.BreadcrumbsListener {
 
-    companion object {
-        lateinit var mPath: String
-        var mFirstUpdate: Boolean = true
-        var mShowHidden: Boolean = false
-        var mShowFullPath: Boolean = false
+    interface OnPickFolderListener {
+        fun onFail(error: PickFolderResult)
 
-        fun newInstance(path: String, showHidden: Boolean, showFullPath: Boolean): PickFolderDialog {
-            mPath = path
-            mFirstUpdate = true
-            mShowHidden = showHidden
-            mShowFullPath = showFullPath
-            return PickFolderDialog()
-        }
+        fun onSuccess(path: String)
     }
 
-    lateinit var dialog: View
-    var requestCode = 0
+    enum class PickFolderResult() {
+        NO_PERMISSION, DISMISS
+    }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
+    var mPath = ""
+    var mShowHidden = false
+    var mShowFullPath = false
+    var mListener: OnPickFolderListener? = null
+
+    var mFirstUpdate = true
+    lateinit var mContext: Context
+    lateinit var mDialog: AlertDialog
+    lateinit var mDialogView: View
+
+    constructor(context: Context, path: String, showHidden: Boolean = false, showFullPath: Boolean = false, listener: OnPickFolderListener) : this() {
+        mContext = context
+        mPath = path
+        mShowHidden = showHidden
+        mShowFullPath = showFullPath
+        mListener = listener
+
         if (!context.hasStoragePermission()) {
-            if (BuildConfig.DEBUG) {
-                context.toast(R.string.smtfp_no_permission)
-            }
-            dismiss()
+            mListener?.onFail(PickFolderResult.NO_PERMISSION)
+            return
         }
-    }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        dialog = activity.layoutInflater.inflate(R.layout.smtfp_directory_picker, null)
-        requestCode = targetRequestCode
-
+        mDialogView = LayoutInflater.from(mContext).inflate(R.layout.smtfp_directory_picker, null)
         updateItems()
         setupBreadcrumbs()
 
-        return AlertDialog.Builder(activity)
-                .setTitle(resources.getString(R.string.smtfp_select_folder))
-                .setView(dialog)
+        mDialog = AlertDialog.Builder(context)
+                .setTitle(context.resources.getString(R.string.smtfp_select_folder))
+                .setView(mDialogView)
                 .setPositiveButton(R.string.smtfp_ok) { dialog, which -> sendResult() }
-                .setNegativeButton(R.string.smtfp_cancel, null)
+                .setNegativeButton(R.string.smtfp_cancel, { dialog, which -> dialogDismissed() })
+                .setOnCancelListener({ dialogDismissed() })
                 .create()
+
+        mDialog.show()
+    }
+
+    private fun dialogDismissed() {
+        mListener?.onFail(PickFolderResult.DISMISS)
     }
 
     private fun updateItems() {
@@ -76,10 +77,10 @@ class PickFolderDialog : DialogFragment(), Breadcrumbs.BreadcrumbsListener {
 
         items = items.sortedWith(compareBy({ !it.isDirectory }, { it.name.toLowerCase() }))
 
-        val adapter = ItemsAdapter(context, items)
-        dialog.directory_picker_list.adapter = adapter
-        dialog.directory_picker_breadcrumbs.setBreadcrumb(mPath, mShowFullPath)
-        dialog.directory_picker_list.setOnItemClickListener { adapterView, view, position, id ->
+        val adapter = ItemsAdapter(mContext, items)
+        mDialogView.directory_picker_list.adapter = adapter
+        mDialogView.directory_picker_breadcrumbs.setBreadcrumb(mPath, mShowFullPath)
+        mDialogView.directory_picker_list.setOnItemClickListener { adapterView, view, position, id ->
             val item = items[position]
             if (item.isDirectory) {
                 mPath = item.path
@@ -91,14 +92,12 @@ class PickFolderDialog : DialogFragment(), Breadcrumbs.BreadcrumbsListener {
     }
 
     private fun sendResult() {
-        val intent = Intent()
-        intent.data = Uri.parse(mPath)
-        targetFragment?.onActivityResult(requestCode, Activity.RESULT_OK, intent)
-        dismiss()
+        mListener?.onSuccess(mPath)
+        mDialog.dismiss()
     }
 
     private fun setupBreadcrumbs() {
-        dialog.directory_picker_breadcrumbs.setListener(this)
+        mDialogView.directory_picker_breadcrumbs.setListener(this)
     }
 
     private fun getItems(path: String): List<FileDirItem> {
@@ -140,7 +139,7 @@ class PickFolderDialog : DialogFragment(), Breadcrumbs.BreadcrumbsListener {
     }
 
     override fun breadcrumbClicked(id: Int) {
-        val item = dialog.directory_picker_breadcrumbs.getChildAt(id).tag as FileDirItem
+        val item = mDialogView.directory_picker_breadcrumbs.getChildAt(id).tag as FileDirItem
         mPath = item.path
         updateItems()
     }
