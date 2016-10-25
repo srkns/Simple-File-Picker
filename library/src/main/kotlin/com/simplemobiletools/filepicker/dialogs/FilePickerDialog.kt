@@ -15,29 +15,29 @@ import java.io.File
 import java.util.*
 import kotlin.comparisons.compareBy
 
-class PickFolderDialog() : Breadcrumbs.BreadcrumbsListener {
+class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
 
-    interface OnPickFolderListener {
-        fun onFail(error: PickFolderResult)
+    interface OnFilePickerListener {
+        fun onFail(error: FilePickerResult)
 
         fun onSuccess(path: String)
     }
 
-    enum class PickFolderResult() {
+    enum class FilePickerResult() {
         NO_PERMISSION, DISMISS
     }
 
     var mPath = ""
     var mShowHidden = false
     var mShowFullPath = false
-    var mListener: OnPickFolderListener? = null
+    var mListener: OnFilePickerListener? = null
 
     var mFirstUpdate = true
     lateinit var mContext: Context
     lateinit var mDialog: AlertDialog
     lateinit var mDialogView: View
 
-    constructor(context: Context, path: String, showHidden: Boolean = false, showFullPath: Boolean = false, listener: OnPickFolderListener) : this() {
+    constructor(context: Context, path: String, showHidden: Boolean = false, showFullPath: Boolean = false, listener: OnFilePickerListener) : this() {
         mContext = context
         mPath = path
         mShowHidden = showHidden
@@ -45,7 +45,7 @@ class PickFolderDialog() : Breadcrumbs.BreadcrumbsListener {
         mListener = listener
 
         if (!context.hasStoragePermission()) {
-            mListener?.onFail(PickFolderResult.NO_PERMISSION)
+            mListener?.onFail(FilePickerResult.NO_PERMISSION)
             return
         }
 
@@ -65,7 +65,7 @@ class PickFolderDialog() : Breadcrumbs.BreadcrumbsListener {
     }
 
     private fun dialogDismissed() {
-        mListener?.onFail(PickFolderResult.DISMISS)
+        mListener?.onFail(FilePickerResult.DISMISS)
     }
 
     private fun updateItems() {
