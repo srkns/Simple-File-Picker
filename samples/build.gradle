@@ -34,10 +34,6 @@ dependencies {
     releaseCompile project(path: ':library', configuration: 'release')
 }
 
-repositories {
-    mavenCentral()
-}
-
 buildscript {
     ext.kotlin_version = '1.0.3'
     repositories {
