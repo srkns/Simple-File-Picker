@@ -33,6 +33,6 @@ class MainActivity : AppCompatActivity() {
             override fun onSuccess(path: String) {
                 picked_folder_path.text = path
             }
-        })
+        }, false)
     }
 }

@@ -33,6 +33,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     var mListener: OnFilePickerListener? = null
 
     var mFirstUpdate = true
+    var mPickFile = true
     lateinit var mContext: Context
     lateinit var mDialog: AlertDialog
     lateinit var mDialogView: View
@@ -43,10 +44,12 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
      * @param context activity context
      * @param path initial path of the dialog
      * @param listener the callback used for returning the success or failure result to the initiator
+     * @param pickFile toggle used to determine if we are picking a file or a folder
      * @param showHidden toggle for showing hidden items, whose name starts with a dot
      * @param showFullPath show the full path in the breadcrumb, i.e. "/storage/emulated/0" instead of "home"
      */
-    constructor(context: Context, path: String,  listener: OnFilePickerListener, showHidden: Boolean = false, showFullPath: Boolean = false) : this() {
+    constructor(context: Context, path: String,  listener: OnFilePickerListener, pickFile: Boolean = true,
+                showHidden: Boolean = false, showFullPath: Boolean = false) : this() {
         mContext = context
         mPath = path
         mShowHidden = showHidden
@@ -65,7 +68,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
         mDialog = AlertDialog.Builder(context)
                 .setTitle(context.resources.getString(R.string.smtfp_select_folder))
                 .setView(mDialogView)
-                .setPositiveButton(R.string.smtfp_ok) { dialog, which -> sendResult() }
+                .setPositiveButton(R.string.smtfp_ok) { dialog, which -> sendSuccess() }
                 .setNegativeButton(R.string.smtfp_cancel, { dialog, which -> dialogDismissed() })
                 .setOnCancelListener({ dialogDismissed() })
                 .create()
@@ -80,7 +83,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     private fun updateItems() {
         var items = getItems(mPath)
         if (!containsDirectory(items) && !mFirstUpdate) {
-            sendResult()
+            sendSuccess()
             return
         }
 
@@ -94,13 +97,16 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
             if (item.isDirectory) {
                 mPath = item.path
                 updateItems()
+            } else {
+                mPath = item.path
+                sendSuccess()
             }
         }
 
         mFirstUpdate = false
     }
 
-    private fun sendResult() {
+    private fun sendSuccess() {
         mListener?.onSuccess(mPath)
         mDialog.dismiss()
     }
@@ -115,7 +121,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
         val files = base.listFiles()
         if (files != null) {
             for (file in files) {
-                if (!file.isDirectory)
+                if (!file.isDirectory && !mPickFile)
                     continue
 
                 if (!mShowHidden && file.isHidden)
