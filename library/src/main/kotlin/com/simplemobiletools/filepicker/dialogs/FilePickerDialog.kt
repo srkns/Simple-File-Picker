@@ -1,5 +1,6 @@
 package com.simplemobiletools.filepicker.dialogs
 
+import android.app.Activity
 import android.content.Context
 import android.os.Environment
 import android.support.v7.app.AlertDialog
@@ -42,27 +43,27 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     /**
      * The only filepicker constructor with a couple optional parameters
      *
-     * @param context activity context
+     * @param activity use the activity instead of any context to avoid some Theme.AppCompat issues
      * @param path initial path of the dialog, defaults to the external storage
      * @param listener the callback used for returning the success or failure result to the initiator
      * @param pickFile toggle used to determine if we are picking a file or a folder
      * @param showHidden toggle for showing hidden items, whose name starts with a dot
      * @param showFullPath show the full path in the breadcrumb, i.e. "/storage/emulated/0" instead of "home"
      */
-    constructor(context: Context,
+    constructor(activity: Activity,
                 path: String = Environment.getExternalStorageDirectory().toString(),
                 pickFile: Boolean = true,
                 showHidden: Boolean = false,
                 showFullPath: Boolean = false,
                 listener: OnFilePickerListener) : this() {
-        mContext = context
+        mContext = activity
         mPath = path
         mShowHidden = showHidden
         mShowFullPath = showFullPath
         mListener = listener
         mPickFile = pickFile
 
-        if (!context.hasStoragePermission()) {
+        if (!mContext.hasStoragePermission()) {
             mListener?.onFail(FilePickerResult.NO_PERMISSION)
             return
         }
@@ -71,7 +72,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
         updateItems()
         setupBreadcrumbs()
 
-        val builder = AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(mContext)
                 .setTitle(getTitle())
                 .setView(mDialogView)
                 .setNegativeButton(R.string.smtfp_cancel, { dialog, which -> dialogDismissed() })

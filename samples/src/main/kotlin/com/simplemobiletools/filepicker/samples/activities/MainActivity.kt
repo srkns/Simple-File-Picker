@@ -38,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        FilePickerDialog(this, pickFile = action == PICK_FILE, listener = object : FilePickerDialog.OnFilePickerListener {
+        FilePickerDialog(this@MainActivity, pickFile = action == PICK_FILE, listener = object : FilePickerDialog.OnFilePickerListener {
             override fun onFail(error: FilePickerDialog.FilePickerResult) {
                 when (error) {
                     NO_PERMISSION -> toast(R.string.no_permission)
