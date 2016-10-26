@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     private fun pickFolder() {
         val home = Environment.getExternalStorageDirectory().toString()
 
-        FilePickerDialog(this, home, listener = object : FilePickerDialog.OnFilePickerListener {
+        FilePickerDialog(this, home, object : FilePickerDialog.OnFilePickerListener {
             override fun onFail(error: FilePickerDialog.FilePickerResult) {
                 when (error) {
                     NO_PERMISSION -> toast(R.string.no_permission)

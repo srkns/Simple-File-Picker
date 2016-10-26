@@ -37,7 +37,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     lateinit var mDialog: AlertDialog
     lateinit var mDialogView: View
 
-    constructor(context: Context, path: String, showHidden: Boolean = false, showFullPath: Boolean = false, listener: OnFilePickerListener) : this() {
+    constructor(context: Context, path: String, listener: OnFilePickerListener, showHidden: Boolean = false, showFullPath: Boolean = false) : this() {
         mContext = context
         mPath = path
         mShowHidden = showHidden
