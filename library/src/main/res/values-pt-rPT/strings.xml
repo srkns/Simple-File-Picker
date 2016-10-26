@@ -1,5 +1,6 @@
 <resources>
     <string name="smtfp_select_folder">Select a folder</string>
+    <string name="smtfp_select_file">Select a file</string>
     <string name="smtfp_initial_breadcrumb">início</string>
     <string name="smtfp_ok">OK</string>
     <string name="smtfp_cancel">Cancelar</string>
