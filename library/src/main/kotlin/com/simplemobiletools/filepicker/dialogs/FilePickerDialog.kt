@@ -105,7 +105,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
             if (item.isDirectory) {
                 mPath = item.path
                 updateItems()
-            } else {
+            } else if (mPickFile) {
                 mPath = item.path
                 sendSuccess()
             }
@@ -129,16 +129,12 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
         val files = base.listFiles()
         if (files != null) {
             for (file in files) {
-                if (!file.isDirectory && !mPickFile)
-                    continue
-
                 if (!mShowHidden && file.isHidden)
                     continue
 
                 val curPath = file.absolutePath
                 val curName = curPath.getFilenameFromPath()
                 val size = file.length()
-
                 items.add(FileDirItem(curPath, curName, file.isDirectory, getChildren(file), size))
             }
         }
