@@ -27,18 +27,18 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         home = Environment.getExternalStorageDirectory().toString()
 
-        pick_file_button.setOnClickListener { pickFile() }
-        pick_folder_button.setOnClickListener { pickFolder() }
+        pick_file_button.setOnClickListener { openDialog(PICK_FILE) }
+        pick_folder_button.setOnClickListener { openDialog(PICK_FOLDER) }
     }
 
-    private fun pickFile() {
+    private fun openDialog(id: Int) {
+        action = id
         if (!hasStoragePermission()) {
-            action = PICK_FILE
             requestStoragePermission()
             return
         }
 
-        FilePickerDialog(this, listener = object : FilePickerDialog.OnFilePickerListener {
+        FilePickerDialog(this, pickFile = action == PICK_FILE, listener = object : FilePickerDialog.OnFilePickerListener {
             override fun onFail(error: FilePickerDialog.FilePickerResult) {
                 when (error) {
                     NO_PERMISSION -> toast(R.string.no_permission)
@@ -48,29 +48,10 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSuccess(path: String) {
-                picked_file_path.text = path
-            }
-        })
-    }
-
-    private fun pickFolder() {
-        if (!hasStoragePermission()) {
-            action = PICK_FOLDER
-            requestStoragePermission()
-            return
-        }
-
-        FilePickerDialog(this, pickFile = false, listener = object : FilePickerDialog.OnFilePickerListener {
-            override fun onFail(error: FilePickerDialog.FilePickerResult) {
-                when (error) {
-                    NO_PERMISSION -> toast(R.string.no_permission)
-                    DISMISS -> toast(R.string.dialog_dismissed)
-                    else -> toast(R.string.unknown_error)
-                }
-            }
-
-            override fun onSuccess(path: String) {
-                picked_folder_path.text = path
+                if (action == PICK_FILE)
+                    picked_file_path.text = path
+                else
+                    picked_folder_path.text = path
             }
         })
     }
@@ -81,10 +62,7 @@ class MainActivity : AppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == STORAGE_PERMISSION && grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            when (action) {
-                PICK_FILE -> pickFile()
-                else -> pickFolder()
-            }
+            openDialog(action)
         }
     }
 }
