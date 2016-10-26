@@ -4,7 +4,20 @@
     android:id="@+id/main_holder"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_margin="@dimen/smtfp_activity_margin"
     android:orientation="vertical">
+
+    <Button
+        android:id="@+id/pick_file_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/pick_a_file"/>
+
+    <TextView
+        android:id="@+id/picked_file_path"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/smtfp_activity_margin"/>
 
     <Button
         android:id="@+id/pick_folder_button"

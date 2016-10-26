@@ -11,16 +11,34 @@ import com.simplemobiletools.filepicker.samples.R
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
+    lateinit var home: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        home = Environment.getExternalStorageDirectory().toString()
 
+        pick_file_button.setOnClickListener { pickFile() }
         pick_folder_button.setOnClickListener { pickFolder() }
     }
 
-    private fun pickFolder() {
-        val home = Environment.getExternalStorageDirectory().toString()
+    private fun pickFile() {
+        FilePickerDialog(this, home, true, listener = object : FilePickerDialog.OnFilePickerListener {
+            override fun onFail(error: FilePickerDialog.FilePickerResult) {
+                when (error) {
+                    NO_PERMISSION -> toast(R.string.no_permission)
+                    DISMISS -> toast(R.string.dialog_dismissed)
+                    else -> toast(R.string.unknown_error)
+                }
+            }
 
+            override fun onSuccess(path: String) {
+                picked_file_path.text = path
+            }
+        })
+    }
+
+    private fun pickFolder() {
         FilePickerDialog(this, home, false, listener = object : FilePickerDialog.OnFilePickerListener {
             override fun onFail(error: FilePickerDialog.FilePickerResult) {
                 when (error) {
