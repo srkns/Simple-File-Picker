@@ -117,8 +117,11 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     }
 
     private fun sendSuccess() {
-        mListener?.onSuccess(mPath)
-        mDialog.dismiss()
+        val file = File(mPath)
+        if ((mPickFile && file.isFile) || (!mPickFile && file.isDirectory)) {
+            mListener?.onSuccess(mPath)
+            mDialog.dismiss()
+        }
     }
 
     private fun setupBreadcrumbs() {
