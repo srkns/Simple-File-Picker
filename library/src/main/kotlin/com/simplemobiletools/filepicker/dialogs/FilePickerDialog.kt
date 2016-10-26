@@ -71,14 +71,16 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
         updateItems()
         setupBreadcrumbs()
 
-        mDialog = AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(context)
                 .setTitle(context.resources.getString(R.string.smtfp_select_folder))
                 .setView(mDialogView)
-                .setPositiveButton(R.string.smtfp_ok) { dialog, which -> sendSuccess() }
                 .setNegativeButton(R.string.smtfp_cancel, { dialog, which -> dialogDismissed() })
                 .setOnCancelListener({ dialogDismissed() })
-                .create()
 
+        if (!mPickFile)
+            builder.setPositiveButton(R.string.smtfp_ok) { dialog, which -> sendSuccess() }
+
+        mDialog = builder.create()
         mDialog.show()
     }
 
@@ -88,7 +90,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
 
     private fun updateItems() {
         var items = getItems(mPath)
-        if (!containsDirectory(items) && !mFirstUpdate) {
+        if (!containsDirectory(items) && !mFirstUpdate && !mPickFile) {
             sendSuccess()
             return
         }
