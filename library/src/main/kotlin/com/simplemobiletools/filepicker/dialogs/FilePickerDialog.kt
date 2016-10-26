@@ -48,13 +48,14 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
      * @param showHidden toggle for showing hidden items, whose name starts with a dot
      * @param showFullPath show the full path in the breadcrumb, i.e. "/storage/emulated/0" instead of "home"
      */
-    constructor(context: Context, path: String,  listener: OnFilePickerListener, pickFile: Boolean = true,
-                showHidden: Boolean = false, showFullPath: Boolean = false) : this() {
+    constructor(context: Context, path: String, pickFile: Boolean = true, showHidden: Boolean = false, showFullPath: Boolean = false,
+                listener: OnFilePickerListener) : this() {
         mContext = context
         mPath = path
         mShowHidden = showHidden
         mShowFullPath = showFullPath
         mListener = listener
+        mPickFile = pickFile
 
         if (!context.hasStoragePermission()) {
             mListener?.onFail(FilePickerResult.NO_PERMISSION)
