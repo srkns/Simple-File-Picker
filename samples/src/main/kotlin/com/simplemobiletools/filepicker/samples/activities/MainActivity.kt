@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun pickFile() {
-        FilePickerDialog(this, home, true, listener = object : FilePickerDialog.OnFilePickerListener {
+        FilePickerDialog(this, listener = object : FilePickerDialog.OnFilePickerListener {
             override fun onFail(error: FilePickerDialog.FilePickerResult) {
                 when (error) {
                     NO_PERMISSION -> toast(R.string.no_permission)
@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun pickFolder() {
-        FilePickerDialog(this, home, false, listener = object : FilePickerDialog.OnFilePickerListener {
+        FilePickerDialog(this, pickFile = false, listener = object : FilePickerDialog.OnFilePickerListener {
             override fun onFail(error: FilePickerDialog.FilePickerResult) {
                 when (error) {
                     NO_PERMISSION -> toast(R.string.no_permission)

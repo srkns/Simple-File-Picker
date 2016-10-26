@@ -1,6 +1,7 @@
 package com.simplemobiletools.filepicker.dialogs
 
 import android.content.Context
+import android.os.Environment
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
@@ -42,13 +43,17 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
      * The only filepicker constructor with a couple optional parameters
      *
      * @param context activity context
-     * @param path initial path of the dialog
+     * @param path initial path of the dialog, defaults to the external storage
      * @param listener the callback used for returning the success or failure result to the initiator
      * @param pickFile toggle used to determine if we are picking a file or a folder
      * @param showHidden toggle for showing hidden items, whose name starts with a dot
      * @param showFullPath show the full path in the breadcrumb, i.e. "/storage/emulated/0" instead of "home"
      */
-    constructor(context: Context, path: String, pickFile: Boolean = true, showHidden: Boolean = false, showFullPath: Boolean = false,
+    constructor(context: Context,
+                path: String = Environment.getExternalStorageDirectory().toString(),
+                pickFile: Boolean = true,
+                showHidden: Boolean = false,
+                showFullPath: Boolean = false,
                 listener: OnFilePickerListener) : this() {
         mContext = context
         mPath = path
