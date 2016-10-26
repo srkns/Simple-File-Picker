@@ -37,7 +37,16 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     lateinit var mDialog: AlertDialog
     lateinit var mDialogView: View
 
-    constructor(context: Context, path: String, listener: OnFilePickerListener, showHidden: Boolean = false, showFullPath: Boolean = false) : this() {
+    /**
+     * The only filepicker constructor with a couple optional parameters
+     *
+     * @param context activity context
+     * @param path initial path of the dialog
+     * @param listener the callback used for returning the success or failure result to the initiator
+     * @param showHidden toggle for showing hidden items, whose name starts with a dot
+     * @param showFullPath show the full path in the breadcrumb, i.e. "/storage/emulated/0" instead of "home"
+     */
+    constructor(context: Context, path: String,  listener: OnFilePickerListener, showHidden: Boolean = false, showFullPath: Boolean = false) : this() {
         mContext = context
         mPath = path
         mShowHidden = showHidden
