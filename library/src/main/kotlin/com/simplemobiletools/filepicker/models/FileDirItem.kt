@@ -21,8 +21,9 @@ class FileDirItem(val path: String, val name: String, val isDirectory: Boolean, 
     }
 
     fun isGif() = name.toLowerCase().endsWith(".gif")
-    fun isVideo() = getMimeType().startsWith("video")
 
+    // do not use these methods while scrolling. They are accurate, but slow.
+    fun isVideo() = getMimeType().startsWith("video")
     fun isImage(): Boolean {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
