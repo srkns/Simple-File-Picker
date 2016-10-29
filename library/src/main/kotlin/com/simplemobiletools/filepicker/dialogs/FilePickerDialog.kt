@@ -114,7 +114,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
 
         val adapter = ItemsAdapter(mContext, items)
         mDialogView.directory_picker_list.adapter = adapter
-        mDialogView.directory_picker_breadcrumbs.setBreadcrumb(mPath, mShowFullPath)
+        mDialogView.directory_picker_breadcrumbs.setBreadcrumb(mPath, mBasePath, mShowFullPath)
         mDialogView.directory_picker_list.setOnItemClickListener { adapterView, view, position, id ->
             val item = items[position]
             if (item.isDirectory) {
@@ -180,6 +180,8 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
             StoragePickerDialog(mContext, mBasePath, object: StoragePickerDialog.OnStoragePickerListener {
                 override fun onPick(path: String) {
                     mBasePath = path
+                    mPath = path
+                    updateItems()
                 }
             })
         } else {

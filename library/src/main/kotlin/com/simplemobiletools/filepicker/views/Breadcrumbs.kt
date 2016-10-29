@@ -15,23 +15,23 @@ import kotlinx.android.synthetic.main.smtfp_breadcrumb_item.view.*
 class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs), View.OnClickListener {
     private var mDeviceWidth: Int = 0
 
-    private var mInflater: LayoutInflater? = null
+    private var mInflater: LayoutInflater
     private var mListener: BreadcrumbsListener? = null
 
     init {
-        init(context)
-    }
-
-    private fun init(context: Context) {
         mInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val display = (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
-        val deviceDisplay = Point()
-        display.getSize(deviceDisplay)
-        mDeviceWidth = deviceDisplay.x
+        mDeviceWidth = getDeviceWidth()
     }
 
     fun setListener(listener: BreadcrumbsListener) {
         mListener = listener
+    }
+
+    fun getDeviceWidth(): Int {
+        val display = (context.getSystemService(Context.WINDOW_SERVICE) as WindowManager).defaultDisplay
+        val deviceDisplay = Point()
+        display.getSize(deviceDisplay)
+        return deviceDisplay.x
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -93,12 +93,11 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
         setMeasuredDimension(parentWidth, calculatedHeight)
     }
 
-    fun setBreadcrumb(fullPath: String, showFullPath: Boolean) {
-        val basePath = context.getInternalPath()
+    fun setBreadcrumb(fullPath: String, basePath: String, showFullPath: Boolean) {
         var tempPath = fullPath
         var currPath = basePath
         if (!showFullPath) {
-            tempPath = fullPath.replace(basePath, context.getString(R.string.smtfp_internal) + "/")
+            tempPath = fullPath.replace(basePath, getStorageName(basePath))
         } else {
             currPath = "/"
         }
@@ -125,8 +124,12 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
         }
     }
 
+    private fun getStorageName(basePath: String): String {
+        return (if (basePath == context.getInternalPath()) context.getString(R.string.smtfp_internal) else context.getString(R.string.smtfp_sd_card)) + "/"
+    }
+
     private fun addBreadcrumb(item: FileDirItem, addPrefix: Boolean) {
-        val view = mInflater!!.inflate(R.layout.smtfp_breadcrumb_item, null, false)
+        val view = mInflater.inflate(R.layout.smtfp_breadcrumb_item, null, false)
         var textToAdd = item.name
         if (addPrefix)
             textToAdd = " -> " + textToAdd
@@ -136,10 +139,6 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
         view.setOnClickListener(this)
 
         view.tag = item
-    }
-
-    fun removeBreadcrumb() {
-        removeView(getChildAt(childCount - 1))
     }
 
     private fun addRootFolder() {
