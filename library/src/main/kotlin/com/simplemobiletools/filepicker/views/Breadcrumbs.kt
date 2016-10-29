@@ -125,7 +125,12 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
     }
 
     private fun getStorageName(basePath: String): String {
-        return (if (basePath == context.getInternalPath()) context.getString(R.string.smtfp_internal) else context.getString(R.string.smtfp_sd_card)) + "/"
+        val id = when (basePath) {
+            "/" -> R.string.smtfp_root
+            context.getInternalPath() -> R.string.smtfp_internal
+            else -> R.string.smtfp_sd_card
+        }
+        return context.getString(id) + "/"
     }
 
     private fun addBreadcrumb(item: FileDirItem, addPrefix: Boolean) {

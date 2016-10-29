@@ -22,15 +22,16 @@ class StoragePickerDialog(context: Context, val basePath: String, val listener: 
     init {
         val inflater = LayoutInflater.from(context)
         val resources = context.resources
-
+        val layoutParams = RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         val radioGroup = inflater.inflate(R.layout.smtfp_radio_group, null) as RadioGroup
+
         val internalButton = inflater.inflate(R.layout.smtfp_radio_button, null) as RadioButton
         internalButton.apply {
             text = resources.getString(R.string.smtfp_internal)
             isChecked = basePath == context.getInternalPath()
             setOnClickListener { internalPicked() }
         }
-        radioGroup.addView(internalButton, RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+        radioGroup.addView(internalButton, layoutParams)
 
         if (isSDCardAvailable()) {
             val sdButton = inflater.inflate(R.layout.smtfp_radio_button, null) as RadioButton
@@ -39,8 +40,16 @@ class StoragePickerDialog(context: Context, val basePath: String, val listener: 
                 isChecked = basePath == context.getSDCardPath()
                 setOnClickListener { sdPicked() }
             }
-            radioGroup.addView(sdButton, RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
+            radioGroup.addView(sdButton, layoutParams)
         }
+
+        val rootButton = inflater.inflate(R.layout.smtfp_radio_button, null) as RadioButton
+        rootButton.apply {
+            text = resources.getString(R.string.smtfp_root)
+            isChecked = basePath == "/"
+            setOnClickListener { rootPicked() }
+        }
+        radioGroup.addView(rootButton, layoutParams)
 
         mDialog = AlertDialog.Builder(context)
                 .setTitle(context.resources.getString(R.string.smtfp_select_storage))
@@ -58,6 +67,11 @@ class StoragePickerDialog(context: Context, val basePath: String, val listener: 
     private fun sdPicked() {
         mDialog?.dismiss()
         listener.onPick(context.getSDCardPath())
+    }
+
+    private fun rootPicked() {
+        mDialog?.dismiss()
+        listener.onPick("/")
     }
 
     private fun isSDCardAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
