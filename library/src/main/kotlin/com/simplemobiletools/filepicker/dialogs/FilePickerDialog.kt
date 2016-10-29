@@ -30,6 +30,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
         NO_PERMISSION, DISMISS
     }
 
+    var mBasePath = ""
     var mPath = ""
     var mShowHidden = false
     var mShowFullPath = false
@@ -63,6 +64,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
         mShowFullPath = showFullPath
         mListener = listener
         mPickFile = pickFile
+        mBasePath = mPath
 
         if (!mContext.hasStoragePermission()) {
             mListener?.onFail(FilePickerResult.NO_PERMISSION)
@@ -175,7 +177,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
 
     override fun breadcrumbClicked(id: Int) {
         if (id == 0) {
-            StoragePickerDialog(mContext)
+            StoragePickerDialog(mContext, mBasePath)
         } else {
             val item = mDialogView.directory_picker_breadcrumbs.getChildAt(id).tag as FileDirItem
             mPath = item.path

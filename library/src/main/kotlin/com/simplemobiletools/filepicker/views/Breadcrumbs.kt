@@ -2,13 +2,13 @@ package com.simplemobiletools.filepicker.views
 
 import android.content.Context
 import android.graphics.Point
-import android.os.Environment
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
 import com.simplemobiletools.filepicker.R
+import com.simplemobiletools.filepicker.extensions.getInternalPath
 import com.simplemobiletools.filepicker.models.FileDirItem
 import kotlinx.android.synthetic.main.smtfp_breadcrumb_item.view.*
 
@@ -94,7 +94,7 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
     }
 
     fun setBreadcrumb(fullPath: String, showFullPath: Boolean) {
-        val basePath = Environment.getExternalStorageDirectory().toString()
+        val basePath = context.getInternalPath()
         var tempPath = fullPath
         var currPath = basePath
         if (!showFullPath) {
