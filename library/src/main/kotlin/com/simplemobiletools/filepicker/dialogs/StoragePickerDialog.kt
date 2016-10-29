@@ -1,6 +1,7 @@
 package com.simplemobiletools.filepicker.dialogs
 
 import android.content.Context
+import android.os.Build
 import android.os.Environment
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
@@ -59,5 +60,5 @@ class StoragePickerDialog(context: Context, val basePath: String, val listener: 
         listener.onPick(context.getSDCardPath())
     }
 
-    private fun isSDCardAvailable() = Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
+    private fun isSDCardAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
 }
