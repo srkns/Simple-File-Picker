@@ -74,6 +74,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
         setupBreadcrumbs()
 
         // if a dialog's listview has height wrap_content, it calls getView way too often which can reduce performance
+        // lets just measure it, then set a static height
         mDialogView.directory_picker_list.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
                 mDialogView.directory_picker_list.layoutParams.height = mDialogView.directory_picker_list.height
