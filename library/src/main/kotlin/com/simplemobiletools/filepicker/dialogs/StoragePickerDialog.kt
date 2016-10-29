@@ -11,7 +11,11 @@ import com.simplemobiletools.filepicker.R
 import com.simplemobiletools.filepicker.extensions.getInternalPath
 import com.simplemobiletools.filepicker.extensions.getSDCardPath
 
-class StoragePickerDialog(context: Context, basePath: String) : android.app.AlertDialog.Builder(context), RadioGroup.OnCheckedChangeListener {
+class StoragePickerDialog(context: Context, val basePath: String, val listener: OnStoragePickerListener) : AlertDialog.Builder(context), RadioGroup.OnCheckedChangeListener {
+    interface OnStoragePickerListener {
+        fun onPick(path: String)
+    }
+
     val STORAGE_INTERNAL = 0
     val STORAGE_SD_CARD = 1
     val STORAGE_ROOT = 2
@@ -34,11 +38,10 @@ class StoragePickerDialog(context: Context, basePath: String) : android.app.Aler
         view.addView(radioButton, RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
 
         if (isSDCardAvailable()) {
-            val sdCardPath = context.getSDCardPath()
             val sdButton = inflater.inflate(R.layout.smtfp_radio_button, null) as RadioButton
             sdButton.apply {
                 text = resources.getString(R.string.smtfp_sd_card)
-                isChecked = basePath == sdCardPath
+                isChecked = basePath == context.getSDCardPath()
                 id = STORAGE_SD_CARD
             }
             view.addView(sdButton, RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
@@ -54,6 +57,7 @@ class StoragePickerDialog(context: Context, basePath: String) : android.app.Aler
 
     override fun onCheckedChanged(group: RadioGroup?, checkedId: Int) {
         mDialog?.dismiss()
+        listener.onPick(if (checkedId == STORAGE_INTERNAL) context.getInternalPath() else context.getSDCardPath())
     }
 
     private fun isSDCardAvailable() = Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED

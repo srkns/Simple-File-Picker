@@ -177,7 +177,11 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
 
     override fun breadcrumbClicked(id: Int) {
         if (id == 0) {
-            StoragePickerDialog(mContext, mBasePath)
+            StoragePickerDialog(mContext, mBasePath, object: StoragePickerDialog.OnStoragePickerListener {
+                override fun onPick(path: String) {
+                    mBasePath = path
+                }
+            })
         } else {
             val item = mDialogView.directory_picker_breadcrumbs.getChildAt(id).tag as FileDirItem
             mPath = item.path
