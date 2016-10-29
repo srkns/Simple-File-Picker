@@ -82,7 +82,6 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
             }
         })
 
-
         val builder = AlertDialog.Builder(mContext)
                 .setTitle(getTitle())
                 .setView(mDialogView)
@@ -175,8 +174,12 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     }
 
     override fun breadcrumbClicked(id: Int) {
-        val item = mDialogView.directory_picker_breadcrumbs.getChildAt(id).tag as FileDirItem
-        mPath = item.path
-        updateItems()
+        if (id == 0) {
+            StoragePickerDialog(mContext)
+        } else {
+            val item = mDialogView.directory_picker_breadcrumbs.getChildAt(id).tag as FileDirItem
+            mPath = item.path
+            updateItems()
+        }
     }
 }
