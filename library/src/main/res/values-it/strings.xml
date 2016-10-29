@@ -1,7 +1,9 @@
 <resources>
     <string name="smtfp_select_folder">Select a folder</string>
     <string name="smtfp_select_file">Select a file</string>
-    <string name="smtfp_initial_breadcrumb">home</string>
+    <string name="smtfp_internal">internal</string>
+    <string name="smtfp_external">external</string>
+    <string name="smtfp_root">root</string>
     <string name="smtfp_ok">OK</string>
     <string name="smtfp_cancel">Annulla</string>
     <string name="smtfp_no_permission">Debug: missing Read Storage permission</string>
