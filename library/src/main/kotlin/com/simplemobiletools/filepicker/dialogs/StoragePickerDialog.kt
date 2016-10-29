@@ -27,7 +27,6 @@ class StoragePickerDialog(context: Context, val basePath: String, val listener: 
         val resources = context.resources
 
         val view = inflater.inflate(R.layout.smtfp_radio_group, null) as RadioGroup
-        view.setOnCheckedChangeListener(this)
 
         val radioButton = inflater.inflate(R.layout.smtfp_radio_button, null) as RadioButton
         radioButton.apply {
@@ -47,6 +46,7 @@ class StoragePickerDialog(context: Context, val basePath: String, val listener: 
             view.addView(sdButton, RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
         }
 
+        view.setOnCheckedChangeListener(this)
         mDialog = AlertDialog.Builder(context)
                 .setTitle(context.resources.getString(R.string.smtfp_select_storage))
                 .setView(view)
