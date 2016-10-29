@@ -6,6 +6,7 @@ import android.os.Environment
 import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewTreeObserver
 import com.simplemobiletools.filepicker.R
 import com.simplemobiletools.filepicker.adapters.ItemsAdapter
 import com.simplemobiletools.filepicker.extensions.getFilenameFromPath
@@ -71,6 +72,15 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
         mDialogView = LayoutInflater.from(mContext).inflate(R.layout.smtfp_directory_picker, null)
         updateItems()
         setupBreadcrumbs()
+
+        // if a dialog's listview has height wrap_content, it calls getView way too often which can reduce performance
+        mDialogView.directory_picker_list.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                mDialogView.directory_picker_list.layoutParams.height = mDialogView.directory_picker_list.height
+                mDialogView.directory_picker_list.viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        })
+
 
         val builder = AlertDialog.Builder(mContext)
                 .setTitle(getTitle())
