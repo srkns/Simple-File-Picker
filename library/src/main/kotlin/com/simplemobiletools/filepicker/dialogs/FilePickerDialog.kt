@@ -19,97 +19,74 @@ import java.io.File
 import java.util.*
 import kotlin.comparisons.compareBy
 
-class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
-
-    interface OnFilePickerListener {
-        fun onFail(error: FilePickerResult)
-
-        fun onSuccess(path: String)
-    }
-
-    enum class FilePickerResult() {
-        NO_PERMISSION, DISMISS
-    }
+/**
+ * The only filepicker constructor with a couple optional parameters
+ *
+ * @param activity use the activity instead of any context to avoid some Theme.AppCompat issues
+ * @param currPath initial path of the dialog, defaults to the external storage
+ * @param pickFile toggle used to determine if we are picking a file or a folder
+ * @param showHidden toggle for showing hidden items, whose name starts with a dot
+ * @param showFullPath show the full currPath in the breadcrumb, i.e. "/storage/emulated/0" instead of "home"
+ * @param mustBeWritable toggle to allow picking only files or directories that can be modified
+ * @param listener the callback used for returning the success or failure result to the initiator
+ */
+class FilePickerDialog(activity: Activity,
+                       var currPath: String = Environment.getExternalStorageDirectory().toString(),
+                       val pickFile: Boolean = true,
+                       val showHidden: Boolean = false,
+                       val showFullPath: Boolean = false,
+                       val mustBeWritable: Boolean = true,
+                       val listener: OnFilePickerListener) : Breadcrumbs.BreadcrumbsListener {
 
     var mBasePath = ""
-    var mPath = ""
-    var mShowHidden = false
-    var mShowFullPath = false
-    var mMustBeWritable = true
-    var mListener: OnFilePickerListener? = null
-
     var mFirstUpdate = true
-    var mPickFile = true
-    lateinit var mContext: Context
+    var mContext: Context
     lateinit var mDialog: AlertDialog
     lateinit var mDialogView: View
 
-    /**
-     * The only filepicker constructor with a couple optional parameters
-     *
-     * @param activity use the activity instead of any context to avoid some Theme.AppCompat issues
-     * @param path initial path of the dialog, defaults to the external storage
-     * @param listener the callback used for returning the success or failure result to the initiator
-     * @param pickFile toggle used to determine if we are picking a file or a folder
-     * @param showHidden toggle for showing hidden items, whose name starts with a dot
-     * @param showFullPath show the full path in the breadcrumb, i.e. "/storage/emulated/0" instead of "home"
-     */
-    constructor(activity: Activity,
-                path: String = Environment.getExternalStorageDirectory().toString(),
-                pickFile: Boolean = true,
-                showHidden: Boolean = false,
-                showFullPath: Boolean = false,
-                mustBeWritable: Boolean = true,
-                listener: OnFilePickerListener) : this() {
+    init {
         mContext = activity
-        mPath = path
-        mShowHidden = showHidden
-        mShowFullPath = showFullPath
-        mListener = listener
-        mPickFile = pickFile
-        mBasePath = mPath
-        mMustBeWritable = mustBeWritable
+        mBasePath = currPath
 
         if (!mContext.hasStoragePermission()) {
-            mListener?.onFail(FilePickerResult.NO_PERMISSION)
-            return
+            listener.onFail(FilePickerResult.NO_PERMISSION)
+        } else {
+            mDialogView = LayoutInflater.from(mContext).inflate(R.layout.smtfp_directory_picker, null)
+            updateItems()
+            setupBreadcrumbs()
+
+            // if a dialog's listview has height wrap_content, it calls getView way too often which can reduce performance
+            // lets just measure it, then set a static height
+            mDialogView.directory_picker_list.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
+                override fun onGlobalLayout() {
+                    mDialogView.directory_picker_list.layoutParams.height = mDialogView.directory_picker_list.height
+                    mDialogView.directory_picker_list.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                }
+            })
+
+            val builder = AlertDialog.Builder(mContext)
+                    .setTitle(getTitle())
+                    .setView(mDialogView)
+                    .setNegativeButton(R.string.smtfp_cancel, { dialog, which -> dialogDismissed() })
+                    .setOnCancelListener({ dialogDismissed() })
+
+            if (!pickFile)
+                builder.setPositiveButton(R.string.smtfp_ok) { dialog, which -> verifyPath() }
+
+            mDialog = builder.create()
+            mDialog.show()
         }
-
-        mDialogView = LayoutInflater.from(mContext).inflate(R.layout.smtfp_directory_picker, null)
-        updateItems()
-        setupBreadcrumbs()
-
-        // if a dialog's listview has height wrap_content, it calls getView way too often which can reduce performance
-        // lets just measure it, then set a static height
-        mDialogView.directory_picker_list.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
-            override fun onGlobalLayout() {
-                mDialogView.directory_picker_list.layoutParams.height = mDialogView.directory_picker_list.height
-                mDialogView.directory_picker_list.viewTreeObserver.removeOnGlobalLayoutListener(this)
-            }
-        })
-
-        val builder = AlertDialog.Builder(mContext)
-                .setTitle(getTitle())
-                .setView(mDialogView)
-                .setNegativeButton(R.string.smtfp_cancel, { dialog, which -> dialogDismissed() })
-                .setOnCancelListener({ dialogDismissed() })
-
-        if (!mPickFile)
-            builder.setPositiveButton(R.string.smtfp_ok) { dialog, which -> verifyPath() }
-
-        mDialog = builder.create()
-        mDialog.show()
     }
 
-    private fun getTitle() = mContext.resources.getString(if (mPickFile) R.string.smtfp_select_file else R.string.smtfp_select_folder)
+    private fun getTitle() = mContext.resources.getString(if (pickFile) R.string.smtfp_select_file else R.string.smtfp_select_folder)
 
     private fun dialogDismissed() {
-        mListener?.onFail(FilePickerResult.DISMISS)
+        listener.onFail(FilePickerResult.DISMISS)
     }
 
     private fun updateItems() {
-        var items = getItems(mPath)
-        if (!containsDirectory(items) && !mFirstUpdate && !mPickFile) {
+        var items = getItems(currPath)
+        if (!containsDirectory(items) && !mFirstUpdate && !pickFile) {
             verifyPath()
             return
         }
@@ -118,14 +95,14 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
 
         val adapter = ItemsAdapter(mContext, items)
         mDialogView.directory_picker_list.adapter = adapter
-        mDialogView.directory_picker_breadcrumbs.setBreadcrumb(mPath, mBasePath, mShowFullPath)
+        mDialogView.directory_picker_breadcrumbs.setBreadcrumb(currPath, mBasePath, showFullPath)
         mDialogView.directory_picker_list.setOnItemClickListener { adapterView, view, position, id ->
             val item = items[position]
             if (item.isDirectory) {
-                mPath = item.path
+                currPath = item.path
                 updateItems()
-            } else if (mPickFile) {
-                mPath = item.path
+            } else if (pickFile) {
+                currPath = item.path
                 verifyPath()
             }
         }
@@ -134,15 +111,15 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     }
 
     private fun verifyPath() {
-        val file = File(mPath)
-        if (mPickFile && file.isFile) {
-            if (mMustBeWritable && !file.canWrite()) {
+        val file = File(currPath)
+        if (pickFile && file.isFile) {
+            if (mustBeWritable && !file.canWrite()) {
                 mContext.toast(R.string.smtfp_file_not_writable)
             } else {
                 sendSuccess()
             }
-        } else if (!mPickFile && file.isDirectory) {
-            if (mMustBeWritable && !file.canWrite()) {
+        } else if (!pickFile && file.isDirectory) {
+            if (mustBeWritable && !file.canWrite()) {
                 mContext.toast(R.string.smtfp_dir_not_writable)
             } else {
                 sendSuccess()
@@ -151,7 +128,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     }
 
     private fun sendSuccess() {
-        mListener?.onSuccess(mPath)
+        listener.onSuccess(currPath)
         mDialog.dismiss()
     }
 
@@ -165,7 +142,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
         val files = base.listFiles()
         if (files != null) {
             for (file in files) {
-                if (!mShowHidden && file.isHidden)
+                if (!showHidden && file.isHidden)
                     continue
 
                 val curPath = file.absolutePath
@@ -196,16 +173,26 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     override fun breadcrumbClicked(id: Int) {
         if (id == 0) {
             StoragePickerDialog(mContext, mBasePath, object: StoragePickerDialog.OnStoragePickerListener {
-                override fun onPick(path: String) {
-                    mBasePath = path
-                    mPath = path
+                override fun onPick(pickedPath: String) {
+                    mBasePath = pickedPath
+                    currPath = pickedPath
                     updateItems()
                 }
             })
         } else {
             val item = mDialogView.directory_picker_breadcrumbs.getChildAt(id).tag as FileDirItem
-            mPath = item.path
+            currPath = item.path
             updateItems()
         }
+    }
+
+    interface OnFilePickerListener {
+        fun onFail(error: FilePickerResult)
+
+        fun onSuccess(path: String)
+    }
+
+    enum class FilePickerResult() {
+        NO_PERMISSION, DISMISS
     }
 }

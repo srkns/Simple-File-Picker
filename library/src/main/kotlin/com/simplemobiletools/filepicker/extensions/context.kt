@@ -10,7 +10,7 @@ import android.widget.Toast
 import java.io.File
 
 fun Context.hasStoragePermission(): Boolean {
-    return ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
+    return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 }
 
 fun Context.toast(id: Int) {

@@ -13,10 +13,6 @@ import com.simplemobiletools.filepicker.extensions.getInternalPath
 import com.simplemobiletools.filepicker.extensions.getSDCardPath
 
 class StoragePickerDialog(context: Context, val basePath: String, val listener: OnStoragePickerListener) : AlertDialog.Builder(context) {
-    interface OnStoragePickerListener {
-        fun onPick(path: String)
-    }
-
     var mDialog: AlertDialog?
 
     init {
@@ -75,4 +71,8 @@ class StoragePickerDialog(context: Context, val basePath: String, val listener: 
     }
 
     private fun isSDCardAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
+
+    interface OnStoragePickerListener {
+        fun onPick(pickedPath: String)
+    }
 }
