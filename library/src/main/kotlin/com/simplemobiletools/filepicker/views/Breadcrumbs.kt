@@ -135,6 +135,12 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
         view.tag = item
     }
 
+    fun removeBreadcrumb() {
+        removeView(getChildAt(childCount - 1))
+    }
+
+    val lastItem: FileDirItem get() = getChildAt(childCount - 1).tag as FileDirItem
+
     override fun onClick(v: View) {
         val cnt = childCount
         for (i in 0..cnt - 1) {

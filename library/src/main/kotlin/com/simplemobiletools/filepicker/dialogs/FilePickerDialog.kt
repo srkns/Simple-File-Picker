@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.os.Environment
 import android.support.v7.app.AlertDialog
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewTreeObserver
@@ -67,6 +68,20 @@ class FilePickerDialog(activity: Activity,
                     .setView(mDialogView)
                     .setNegativeButton(R.string.smtfp_cancel, { dialog, which -> dialogDismissed() })
                     .setOnCancelListener({ dialogDismissed() })
+                    .setOnKeyListener({ dialogInterface, i, keyEvent ->
+                        if (keyEvent.action == KeyEvent.ACTION_UP && i == KeyEvent.KEYCODE_BACK) {
+                            val breadcrumbs = mDialogView.directory_picker_breadcrumbs
+                            if (breadcrumbs.childCount > 1) {
+                                breadcrumbs.removeBreadcrumb()
+                                currPath = breadcrumbs.lastItem.path
+                                updateItems()
+                            } else {
+                                mDialog.dismiss()
+                                dialogDismissed()
+                            }
+                        }
+                        true
+                    })
 
             if (!pickFile)
                 builder.setPositiveButton(R.string.smtfp_ok) { dialog, which -> verifyPath() }
@@ -170,8 +185,9 @@ class FilePickerDialog(activity: Activity,
 
     override fun breadcrumbClicked(id: Int) {
         if (id == 0) {
-            StoragePickerDialog(mContext, mBasePath, object: StoragePickerDialog.OnStoragePickerListener {
+            StoragePickerDialog(mContext, mBasePath, object : StoragePickerDialog.OnStoragePickerListener {
                 override fun onPick(pickedPath: String) {
+
                     mBasePath = pickedPath
                     currPath = pickedPath
                     updateItems()
