@@ -84,10 +84,16 @@ class FilePickerDialog(val activity: Activity,
                     })
 
             if (!pickFile)
-                builder.setPositiveButton(R.string.smtfp_ok) { dialog, which -> verifyPath() }
+                builder.setPositiveButton(R.string.smtfp_ok, null)
 
             mDialog = builder.create()
             mDialog.show()
+
+            if (!pickFile) {
+                mDialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener({
+                    verifyPath()
+                })
+            }
         }
     }
 
