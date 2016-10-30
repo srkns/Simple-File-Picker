@@ -1,6 +1,6 @@
 package com.simplemobiletools.filepicker.dialogs
 
-import android.content.Context
+import android.app.Activity
 import android.os.Build
 import android.os.Environment
 import android.support.v7.app.AlertDialog
@@ -12,12 +12,13 @@ import com.simplemobiletools.filepicker.R
 import com.simplemobiletools.filepicker.extensions.getInternalStoragePath
 import com.simplemobiletools.filepicker.extensions.getSDCardPath
 
-class StoragePickerDialog(val context: Context, val basePath: String, val listener: OnStoragePickerListener) {
+class StoragePickerDialog(val activity: Activity, val basePath: String, val listener: OnStoragePickerListener) {
     var mDialog: AlertDialog?
+    val mContext = activity
 
     init {
-        val inflater = LayoutInflater.from(context)
-        val resources = context.resources
+        val inflater = LayoutInflater.from(mContext)
+        val resources = mContext.resources
         val layoutParams = RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         val radioGroup = inflater.inflate(R.layout.smtfp_radio_group, null) as RadioGroup
 
@@ -47,8 +48,8 @@ class StoragePickerDialog(val context: Context, val basePath: String, val listen
         }
         radioGroup.addView(rootButton, layoutParams)
 
-        mDialog = AlertDialog.Builder(context)
-                .setTitle(context.resources.getString(R.string.smtfp_select_storage))
+        mDialog = AlertDialog.Builder(mContext)
+                .setTitle(mContext.resources.getString(R.string.smtfp_select_storage))
                 .setView(radioGroup)
                 .create()
 
@@ -57,12 +58,12 @@ class StoragePickerDialog(val context: Context, val basePath: String, val listen
 
     private fun internalPicked() {
         mDialog?.dismiss()
-        listener.onPick(context.getInternalStoragePath())
+        listener.onPick(mContext.getInternalStoragePath())
     }
 
     private fun sdPicked() {
         mDialog?.dismiss()
-        listener.onPick(context.getSDCardPath())
+        listener.onPick(mContext.getSDCardPath())
     }
 
     private fun rootPicked() {

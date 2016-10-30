@@ -30,7 +30,7 @@ import kotlin.comparisons.compareBy
  * @param mustBeWritable toggle to allow picking only files or directories that can be modified
  * @param listener the callback used for returning the success or failure result to the initiator
  */
-class FilePickerDialog(activity: Activity,
+class FilePickerDialog(val activity: Activity,
                        var currPath: String = Environment.getExternalStorageDirectory().toString(),
                        val pickFile: Boolean = true,
                        val showHidden: Boolean = false,
@@ -185,9 +185,8 @@ class FilePickerDialog(activity: Activity,
 
     override fun breadcrumbClicked(id: Int) {
         if (id == 0) {
-            StoragePickerDialog(mContext, mBasePath, object : StoragePickerDialog.OnStoragePickerListener {
+            StoragePickerDialog(activity, mBasePath, object : StoragePickerDialog.OnStoragePickerListener {
                 override fun onPick(pickedPath: String) {
-
                     mBasePath = pickedPath
                     currPath = pickedPath
                     updateItems()
