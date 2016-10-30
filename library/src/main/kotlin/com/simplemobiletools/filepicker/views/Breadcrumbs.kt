@@ -97,7 +97,7 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
         var tempPath = fullPath
         var currPath = basePath
         if (!showFullPath) {
-            tempPath = fullPath.replace(basePath, getStorageName(basePath))
+            tempPath = fullPath.replaceFirst(basePath, getStorageName(basePath))
         } else {
             currPath = "/"
         }
