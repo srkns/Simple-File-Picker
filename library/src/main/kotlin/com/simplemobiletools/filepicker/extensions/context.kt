@@ -17,7 +17,7 @@ fun Context.toast(id: Int) {
     Toast.makeText(this, id, Toast.LENGTH_SHORT).show()
 }
 
-fun Context.getInternalPath() = Environment.getExternalStorageDirectory().toString()
+fun Context.getInternalStoragePath() = Environment.getExternalStorageDirectory().toString()
 
 fun Context.getSDCardPath(): String {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

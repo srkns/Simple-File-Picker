@@ -9,7 +9,7 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import com.simplemobiletools.filepicker.R
-import com.simplemobiletools.filepicker.extensions.getInternalPath
+import com.simplemobiletools.filepicker.extensions.getInternalStoragePath
 import com.simplemobiletools.filepicker.extensions.getSDCardPath
 
 class StoragePickerDialog(val context: Context, val basePath: String, val listener: OnStoragePickerListener) {
@@ -24,7 +24,7 @@ class StoragePickerDialog(val context: Context, val basePath: String, val listen
         val internalButton = inflater.inflate(R.layout.smtfp_radio_button, null) as RadioButton
         internalButton.apply {
             text = resources.getString(R.string.smtfp_internal)
-            isChecked = basePath == context.getInternalPath()
+            isChecked = basePath == context.getInternalStoragePath()
             setOnClickListener { internalPicked() }
         }
         radioGroup.addView(internalButton, layoutParams)
@@ -57,7 +57,7 @@ class StoragePickerDialog(val context: Context, val basePath: String, val listen
 
     private fun internalPicked() {
         mDialog?.dismiss()
-        listener.onPick(context.getInternalPath())
+        listener.onPick(context.getInternalStoragePath())
     }
 
     private fun sdPicked() {
