@@ -47,11 +47,11 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onSuccess(path: String) {
+            override fun onSuccess(pickedPath: String) {
                 if (action == PICK_FILE)
-                    picked_file_path.text = path
+                    picked_file_path.text = pickedPath
                 else
-                    picked_folder_path.text = path
+                    picked_folder_path.text = pickedPath
             }
         })
     }

@@ -187,7 +187,7 @@ class FilePickerDialog(activity: Activity,
     interface OnFilePickerListener {
         fun onFail(error: FilePickerResult)
 
-        fun onSuccess(path: String)
+        fun onSuccess(pickedPath: String)
     }
 
     enum class FilePickerResult() {
