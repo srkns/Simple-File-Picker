@@ -12,7 +12,7 @@ import com.simplemobiletools.filepicker.R
 import com.simplemobiletools.filepicker.extensions.getInternalPath
 import com.simplemobiletools.filepicker.extensions.getSDCardPath
 
-class StoragePickerDialog(context: Context, val basePath: String, val listener: OnStoragePickerListener) : AlertDialog.Builder(context) {
+class StoragePickerDialog(val context: Context, val basePath: String, val listener: OnStoragePickerListener) {
     var mDialog: AlertDialog?
 
     init {
