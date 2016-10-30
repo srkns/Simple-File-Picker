@@ -1,6 +1,8 @@
 # Simple File Picker
 A simple file and directory picker library.
 
+[ ![Download](https://api.bintray.com/packages/simplemobiletools/filepicker/com.simplemobiletools%3Afilepicker/images/download.svg) ](https://bintray.com/simplemobiletools/filepicker/com.simplemobiletools%3Afilepicker/_latestVersion)
+
 License
 -------
     Copyright 2016 SimpleMobileTools
