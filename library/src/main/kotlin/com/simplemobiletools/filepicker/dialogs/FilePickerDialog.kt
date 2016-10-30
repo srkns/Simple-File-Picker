@@ -11,6 +11,7 @@ import com.simplemobiletools.filepicker.R
 import com.simplemobiletools.filepicker.adapters.ItemsAdapter
 import com.simplemobiletools.filepicker.extensions.getFilenameFromPath
 import com.simplemobiletools.filepicker.extensions.hasStoragePermission
+import com.simplemobiletools.filepicker.extensions.toast
 import com.simplemobiletools.filepicker.models.FileDirItem
 import com.simplemobiletools.filepicker.views.Breadcrumbs
 import kotlinx.android.synthetic.main.smtfp_directory_picker.view.*
@@ -34,6 +35,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     var mPath = ""
     var mShowHidden = false
     var mShowFullPath = false
+    var mMustBeWritable = true
     var mListener: OnFilePickerListener? = null
 
     var mFirstUpdate = true
@@ -57,6 +59,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
                 pickFile: Boolean = true,
                 showHidden: Boolean = false,
                 showFullPath: Boolean = false,
+                mustBeWritable: Boolean = true,
                 listener: OnFilePickerListener) : this() {
         mContext = activity
         mPath = path
@@ -65,6 +68,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
         mListener = listener
         mPickFile = pickFile
         mBasePath = mPath
+        mMustBeWritable = mustBeWritable
 
         if (!mContext.hasStoragePermission()) {
             mListener?.onFail(FilePickerResult.NO_PERMISSION)
@@ -91,7 +95,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
                 .setOnCancelListener({ dialogDismissed() })
 
         if (!mPickFile)
-            builder.setPositiveButton(R.string.smtfp_ok) { dialog, which -> sendSuccess() }
+            builder.setPositiveButton(R.string.smtfp_ok) { dialog, which -> verifyPath() }
 
         mDialog = builder.create()
         mDialog.show()
@@ -106,7 +110,7 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
     private fun updateItems() {
         var items = getItems(mPath)
         if (!containsDirectory(items) && !mFirstUpdate && !mPickFile) {
-            sendSuccess()
+            verifyPath()
             return
         }
 
@@ -122,19 +126,33 @@ class FilePickerDialog() : Breadcrumbs.BreadcrumbsListener {
                 updateItems()
             } else if (mPickFile) {
                 mPath = item.path
-                sendSuccess()
+                verifyPath()
             }
         }
 
         mFirstUpdate = false
     }
 
-    private fun sendSuccess() {
+    private fun verifyPath() {
         val file = File(mPath)
-        if ((mPickFile && file.isFile) || (!mPickFile && file.isDirectory)) {
-            mListener?.onSuccess(mPath)
-            mDialog.dismiss()
+        if (mPickFile && file.isFile) {
+            if (mMustBeWritable && !file.canWrite()) {
+                mContext.toast(R.string.smtfp_file_not_writable)
+            } else {
+                sendSuccess()
+            }
+        } else if (!mPickFile && file.isDirectory) {
+            if (mMustBeWritable && !file.canWrite()) {
+                mContext.toast(R.string.smtfp_dir_not_writable)
+            } else {
+                sendSuccess()
+            }
         }
+    }
+
+    private fun sendSuccess() {
+        mListener?.onSuccess(mPath)
+        mDialog.dismiss()
     }
 
     private fun setupBreadcrumbs() {
