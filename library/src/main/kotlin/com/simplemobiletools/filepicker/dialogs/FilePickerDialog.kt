@@ -26,7 +26,6 @@ import kotlin.comparisons.compareBy
  * @param currPath initial path of the dialog, defaults to the external storage
  * @param pickFile toggle used to determine if we are picking a file or a folder
  * @param showHidden toggle for showing hidden items, whose name starts with a dot
- * @param showFullPath show the full currPath in the breadcrumb, i.e. "/storage/emulated/0" instead of "home"
  * @param mustBeWritable toggle to allow picking only files or directories that can be modified
  * @param listener the callback used for returning the success or failure result to the initiator
  */
@@ -34,7 +33,6 @@ class FilePickerDialog(activity: Activity,
                        var currPath: String = Environment.getExternalStorageDirectory().toString(),
                        val pickFile: Boolean = true,
                        val showHidden: Boolean = false,
-                       val showFullPath: Boolean = false,
                        val mustBeWritable: Boolean = true,
                        val listener: OnFilePickerListener) : Breadcrumbs.BreadcrumbsListener {
 
@@ -95,7 +93,7 @@ class FilePickerDialog(activity: Activity,
 
         val adapter = ItemsAdapter(mContext, items)
         mDialogView.directory_picker_list.adapter = adapter
-        mDialogView.directory_picker_breadcrumbs.setBreadcrumb(currPath, mBasePath, showFullPath)
+        mDialogView.directory_picker_breadcrumbs.setBreadcrumb(currPath, mBasePath)
         mDialogView.directory_picker_list.setOnItemClickListener { adapterView, view, position, id ->
             val item = items[position]
             if (item.isDirectory) {

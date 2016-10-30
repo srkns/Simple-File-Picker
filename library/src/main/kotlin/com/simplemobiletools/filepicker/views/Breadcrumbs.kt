@@ -93,14 +93,9 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
         setMeasuredDimension(parentWidth, calculatedHeight)
     }
 
-    fun setBreadcrumb(fullPath: String, basePath: String, showFullPath: Boolean) {
-        var tempPath = fullPath
+    fun setBreadcrumb(fullPath: String, basePath: String) {
         var currPath = basePath
-        if (!showFullPath) {
-            tempPath = fullPath.replaceFirst(basePath, getStorageName(basePath))
-        } else {
-            currPath = "/"
-        }
+        val tempPath = fullPath.replaceFirst(basePath, getStorageName(basePath))
 
         removeAllViewsInLayout()
         val dirs = tempPath.split("/".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
@@ -108,19 +103,13 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
             val dir = dirs[i]
             if (i > 0) {
                 currPath += dir + "/"
-            } else if (showFullPath) {
-                addRootFolder()
             }
 
             if (dir.isEmpty())
                 continue
 
             val item = FileDirItem(currPath, dir, true, 0, 0)
-            addBreadcrumb(item, i > 0 || showFullPath)
-        }
-
-        if (dirs.size == 0 && showFullPath) {
-            addRootFolder()
+            addBreadcrumb(item, i > 0)
         }
     }
 
@@ -144,11 +133,6 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
         view.setOnClickListener(this)
 
         view.tag = item
-    }
-
-    private fun addRootFolder() {
-        val item = FileDirItem("/", "  / ", true, 0, 0)
-        addBreadcrumb(item, false)
     }
 
     override fun onClick(v: View) {
