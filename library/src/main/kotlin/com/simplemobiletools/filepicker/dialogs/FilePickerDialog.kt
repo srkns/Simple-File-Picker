@@ -37,7 +37,6 @@ class FilePickerDialog(val activity: Activity,
                        val mustBeWritable: Boolean = true,
                        val listener: OnFilePickerListener) : Breadcrumbs.BreadcrumbsListener {
 
-    var mBasePath = ""
     var mFirstUpdate = true
     var mContext: Context
     lateinit var mDialog: AlertDialog
@@ -45,7 +44,6 @@ class FilePickerDialog(val activity: Activity,
 
     init {
         mContext = activity
-        mBasePath = currPath
 
         if (!mContext.hasStoragePermission()) {
             listener.onFail(FilePickerResult.NO_PERMISSION)
@@ -114,7 +112,7 @@ class FilePickerDialog(val activity: Activity,
 
         val adapter = ItemsAdapter(mContext, items)
         mDialogView.directory_picker_list.adapter = adapter
-        mDialogView.directory_picker_breadcrumbs.setBreadcrumb(currPath, mBasePath)
+        mDialogView.directory_picker_breadcrumbs.setBreadcrumb(currPath)
         mDialogView.directory_picker_list.setOnItemClickListener { adapterView, view, position, id ->
             val item = items[position]
             if (item.isDirectory) {
@@ -191,9 +189,8 @@ class FilePickerDialog(val activity: Activity,
 
     override fun breadcrumbClicked(id: Int) {
         if (id == 0) {
-            StoragePickerDialog(activity, mBasePath, object : StoragePickerDialog.OnStoragePickerListener {
+            StoragePickerDialog(activity, currPath, object : StoragePickerDialog.OnStoragePickerListener {
                 override fun onPick(pickedPath: String) {
-                    mBasePath = pickedPath
                     currPath = pickedPath
                     updateItems()
                 }

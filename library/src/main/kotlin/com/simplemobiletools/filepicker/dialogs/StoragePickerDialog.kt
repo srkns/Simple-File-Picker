@@ -9,16 +9,18 @@ import android.view.ViewGroup
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import com.simplemobiletools.filepicker.R
+import com.simplemobiletools.filepicker.extensions.getBasePath
 import com.simplemobiletools.filepicker.extensions.getInternalStoragePath
 import com.simplemobiletools.filepicker.extensions.getSDCardPath
 
-class StoragePickerDialog(val activity: Activity, val basePath: String, val listener: OnStoragePickerListener) {
+class StoragePickerDialog(activity: Activity, currPath: String, val listener: OnStoragePickerListener) {
     var mDialog: AlertDialog?
     val mContext = activity
 
     init {
         val inflater = LayoutInflater.from(mContext)
         val resources = mContext.resources
+        val basePath = currPath.getBasePath(mContext)
         val layoutParams = RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         val radioGroup = inflater.inflate(R.layout.smtfp_radio_group, null) as RadioGroup
 

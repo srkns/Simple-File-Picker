@@ -8,6 +8,7 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.LinearLayout
 import com.simplemobiletools.filepicker.R
+import com.simplemobiletools.filepicker.extensions.getBasePath
 import com.simplemobiletools.filepicker.extensions.getInternalStoragePath
 import com.simplemobiletools.filepicker.models.FileDirItem
 import kotlinx.android.synthetic.main.smtfp_breadcrumb_item.view.*
@@ -93,7 +94,8 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
         setMeasuredDimension(parentWidth, calculatedHeight)
     }
 
-    fun setBreadcrumb(fullPath: String, basePath: String) {
+    fun setBreadcrumb(fullPath: String) {
+        val basePath = fullPath.getBasePath(context)
         var currPath = basePath
         val tempPath = fullPath.replaceFirst(basePath, getStorageName(basePath))
 
@@ -119,6 +121,7 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
             context.getInternalStoragePath() -> R.string.smtfp_internal
             else -> R.string.smtfp_sd_card
         }
+
         return context.getString(id) + "/"
     }
 
