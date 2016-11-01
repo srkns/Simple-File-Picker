@@ -2,6 +2,7 @@ package com.simplemobiletools.filepicker.dialogs
 
 import android.app.Activity
 import android.content.Context
+import android.graphics.Rect
 import android.os.Environment
 import android.support.v7.app.AlertDialog
 import android.view.KeyEvent
@@ -56,7 +57,9 @@ class FilePickerDialog(val activity: Activity,
             // lets just measure it, then set a static height
             mDialogView.directory_picker_list.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
-                    mDialogView.directory_picker_list.layoutParams.height = mDialogView.directory_picker_list.height
+                    val rect = Rect()
+                    mDialogView.directory_picker_list.getGlobalVisibleRect(rect)
+                    mDialogView.directory_picker_list.layoutParams.height = rect.bottom - rect.top
                     mDialogView.directory_picker_list.viewTreeObserver.removeOnGlobalLayoutListener(this)
                 }
             })
