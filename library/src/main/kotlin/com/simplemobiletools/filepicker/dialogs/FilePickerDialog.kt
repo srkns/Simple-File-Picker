@@ -12,6 +12,7 @@ import android.view.ViewTreeObserver
 import com.simplemobiletools.filepicker.R
 import com.simplemobiletools.filepicker.adapters.ItemsAdapter
 import com.simplemobiletools.filepicker.extensions.getFilenameFromPath
+import com.simplemobiletools.filepicker.extensions.getInternalStoragePath
 import com.simplemobiletools.filepicker.extensions.hasStoragePermission
 import com.simplemobiletools.filepicker.extensions.toast
 import com.simplemobiletools.filepicker.models.FileDirItem
@@ -49,6 +50,9 @@ class FilePickerDialog(val activity: Activity,
         if (!mContext.hasStoragePermission()) {
             listener.onFail(FilePickerResult.NO_PERMISSION)
         } else {
+            if (!File(currPath).exists())
+                currPath = mContext.getInternalStoragePath()
+
             mDialogView = LayoutInflater.from(mContext).inflate(R.layout.smtfp_directory_picker, null)
             updateItems()
             setupBreadcrumbs()
