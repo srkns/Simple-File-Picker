@@ -182,7 +182,7 @@ class FilePickerDialog(val activity: Activity,
         if (file.listFiles() == null || !file.isDirectory)
             return 0
 
-        return file.listFiles().size
+        return file.listFiles().filter { !it.isHidden || (it.isHidden && showHidden)}.size
     }
 
     private fun containsDirectory(items: List<FileDirItem>): Boolean {
