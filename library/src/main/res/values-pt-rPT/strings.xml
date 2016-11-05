@@ -4,8 +4,6 @@
     <string name="smtfp_ok">OK</string>
     <string name="smtfp_cancel">Cancelar</string>
     <string name="smtfp_no_permission">Debug: missing Read Storage permission</string>
-    <string name="smtfp_file_not_writable">File is not writable</string>
-    <string name="smtfp_dir_not_writable">Directory is not writable</string>
 
     <!-- Storages -->
     <string name="smtfp_select_storage">Select storage</string>

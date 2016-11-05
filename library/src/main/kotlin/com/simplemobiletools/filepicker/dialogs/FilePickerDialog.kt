@@ -14,7 +14,6 @@ import com.simplemobiletools.filepicker.adapters.ItemsAdapter
 import com.simplemobiletools.filepicker.extensions.getFilenameFromPath
 import com.simplemobiletools.filepicker.extensions.getInternalStoragePath
 import com.simplemobiletools.filepicker.extensions.hasStoragePermission
-import com.simplemobiletools.filepicker.extensions.toast
 import com.simplemobiletools.filepicker.models.FileDirItem
 import com.simplemobiletools.filepicker.views.Breadcrumbs
 import kotlinx.android.synthetic.main.smtfp_directory_picker.view.*
@@ -29,14 +28,12 @@ import kotlin.comparisons.compareBy
  * @param currPath initial path of the dialog, defaults to the external storage
  * @param pickFile toggle used to determine if we are picking a file or a folder
  * @param showHidden toggle for showing hidden items, whose name starts with a dot
- * @param mustBeWritable toggle to allow picking only files or directories that can be modified
  * @param listener the callback used for returning the success or failure result to the initiator
  */
 class FilePickerDialog(val activity: Activity,
                        var currPath: String = Environment.getExternalStorageDirectory().toString(),
                        val pickFile: Boolean = true,
                        val showHidden: Boolean = false,
-                       val mustBeWritable: Boolean = true,
                        val listener: OnFilePickerListener) : Breadcrumbs.BreadcrumbsListener {
 
     var mFirstUpdate = true
@@ -136,18 +133,8 @@ class FilePickerDialog(val activity: Activity,
 
     private fun verifyPath() {
         val file = File(currPath)
-        if (pickFile && file.isFile) {
-            if (mustBeWritable && !file.canWrite()) {
-                mContext.toast(R.string.smtfp_file_not_writable)
-            } else {
-                sendSuccess()
-            }
-        } else if (!pickFile && file.isDirectory) {
-            if (mustBeWritable && !file.canWrite()) {
-                mContext.toast(R.string.smtfp_dir_not_writable)
-            } else {
-                sendSuccess()
-            }
+        if ((pickFile && file.isFile) || (!pickFile && file.isDirectory)) {
+            sendSuccess()
         }
     }
 
