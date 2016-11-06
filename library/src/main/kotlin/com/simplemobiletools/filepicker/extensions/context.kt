@@ -7,6 +7,7 @@ import android.os.Build
 import android.os.Environment
 import android.support.v4.content.ContextCompat
 import android.widget.Toast
+import com.simplemobiletools.filepicker.R
 import java.io.File
 
 fun Context.hasStoragePermission(): Boolean {
@@ -34,4 +35,12 @@ fun Context.getSDCardPath(): String {
         }
     }
     return ""
+}
+
+fun Context.getHumanReadablePath(path: String): String {
+    return getString(when (path) {
+        "/" -> R.string.smtfp_root
+        getInternalStoragePath() -> R.string.smtfp_internal
+        else -> R.string.smtfp_sd_card
+    })
 }
