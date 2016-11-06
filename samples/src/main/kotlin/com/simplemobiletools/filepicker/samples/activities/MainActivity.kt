@@ -13,6 +13,7 @@ import com.simplemobiletools.filepicker.dialogs.FilePickerDialog.FilePickerResul
 import com.simplemobiletools.filepicker.extensions.toast
 import com.simplemobiletools.filepicker.samples.R
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.File
 
 class MainActivity : AppCompatActivity() {
     val STORAGE_PERMISSION = 1
@@ -38,7 +39,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        FilePickerDialog(this@MainActivity, home, pickFile = action == PICK_FILE, listener = object : FilePickerDialog.OnFilePickerListener {
+        FilePickerDialog(this@MainActivity, getPath(), pickFile = action == PICK_FILE, listener = object : FilePickerDialog.OnFilePickerListener {
             override fun onFail(error: FilePickerDialog.FilePickerResult) {
                 when (error) {
                     NO_PERMISSION -> toast(R.string.no_permission)
@@ -54,6 +55,20 @@ class MainActivity : AppCompatActivity() {
                     picked_folder_path.text = pickedPath
             }
         })
+    }
+
+    private fun getPath(): String {
+        var path = home
+        if (action == PICK_FILE) {
+            val filePath = picked_file_path.text.toString()
+            if (!filePath.isEmpty())
+                path = File(filePath).parent
+        } else {
+            val folderPath = picked_folder_path.text.toString()
+            if (!folderPath.isEmpty())
+                path = folderPath
+        }
+        return path
     }
 
     private fun requestStoragePermission() = ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION)
