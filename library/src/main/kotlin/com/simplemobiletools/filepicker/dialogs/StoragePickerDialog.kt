@@ -74,6 +74,7 @@ class StoragePickerDialog(activity: Activity, currPath: String, val listener: On
     }
 
     private fun isSDCardAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
+            && !mContext.getSDCardPath().isEmpty()
 
     interface OnStoragePickerListener {
         fun onPick(pickedPath: String)
