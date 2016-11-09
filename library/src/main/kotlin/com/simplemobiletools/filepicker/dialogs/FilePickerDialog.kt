@@ -191,8 +191,10 @@ class FilePickerDialog(val activity: Activity,
             })
         } else {
             val item = mDialogView.directory_picker_breadcrumbs.getChildAt(id).tag as FileDirItem
-            currPath = item.path
-            updateItems()
+            if (currPath != item.path.trimEnd('/')) {
+                currPath = item.path
+                updateItems()
+            }
         }
     }
 
