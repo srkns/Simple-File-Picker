@@ -9,7 +9,7 @@ import android.view.WindowManager
 import android.widget.LinearLayout
 import com.simplemobiletools.filepicker.R
 import com.simplemobiletools.filepicker.extensions.getBasePath
-import com.simplemobiletools.filepicker.extensions.getHumanReadablePath
+import com.simplemobiletools.filepicker.extensions.humanizePath
 import com.simplemobiletools.filepicker.models.FileDirItem
 import kotlinx.android.synthetic.main.smtfp_breadcrumb_item.view.*
 
@@ -97,7 +97,7 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
     fun setBreadcrumb(fullPath: String) {
         val basePath = fullPath.getBasePath(context)
         var currPath = basePath
-        val tempPath = fullPath.replaceFirst(basePath, getStorageName(basePath))
+        val tempPath = context.humanizePath(fullPath)
 
         removeAllViewsInLayout()
         val dirs = tempPath.split("/".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
@@ -110,13 +110,12 @@ class Breadcrumbs(context: Context, attrs: AttributeSet) : LinearLayout(context,
             if (dir.isEmpty())
                 continue
 
+            if (!currPath.endsWith('/'))
+                currPath += "/"
+
             val item = FileDirItem(currPath, dir, true, 0, 0)
             addBreadcrumb(item, i > 0)
         }
-    }
-
-    private fun getStorageName(basePath: String): String {
-        return context.getHumanReadablePath(basePath) + "/"
     }
 
     private fun addBreadcrumb(item: FileDirItem, addPrefix: Boolean) {

@@ -44,3 +44,11 @@ fun Context.getHumanReadablePath(path: String): String {
         else -> R.string.smtfp_sd_card
     })
 }
+
+fun Context.humanizePath(path: String): String {
+    val basePath = path.getBasePath(this)
+    return if (basePath == "/")
+        "${getHumanReadablePath(basePath)}$path"
+    else
+        path.replaceFirst(basePath, getHumanReadablePath(basePath))
+}
