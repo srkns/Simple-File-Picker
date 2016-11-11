@@ -13,13 +13,11 @@ import android.widget.Toast
 import com.simplemobiletools.filepicker.R
 import java.io.File
 
-fun Context.hasStoragePermission(): Boolean {
-    return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
-}
+fun Context.hasStoragePermission() = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
-fun Context.toast(id: Int, length: Int = Toast.LENGTH_SHORT) {
-    Toast.makeText(this, id, length).show()
-}
+fun Context.toast(id: Int, length: Int = Toast.LENGTH_SHORT) = Toast.makeText(this, id, length).show()
+
+fun Context.toast(msg: String, duration: Int = Toast.LENGTH_SHORT) = Toast.makeText(this, msg, duration).show()
 
 fun Context.getSDCardPath(): String {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
@@ -74,12 +72,14 @@ fun Context.getFileDocument(path: String, treeUri: String): DocumentFile {
     return document
 }
 
-fun Context.rescanItem(item: File) {
+fun Context.rescanFile(item: File) {
     if (item.isDirectory) {
         for (child in item.listFiles()) {
-            rescanItem(child)
+            rescanFile(child)
         }
     }
 
     MediaScannerConnection.scanFile(this, arrayOf(item.absolutePath), null, null)
 }
+
+fun Context.rescanFiles(paths: Array<String>) = MediaScannerConnection.scanFile(this, paths, null, null)
