@@ -58,10 +58,13 @@ class FilePickerDialog(val activity: Activity,
             // lets just measure it, then set a static height
             mDialogView.directory_picker_list.viewTreeObserver.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                 override fun onGlobalLayout() {
+                    val listener = this
                     val rect = Rect()
-                    mDialogView.directory_picker_list.getGlobalVisibleRect(rect)
-                    mDialogView.directory_picker_list.layoutParams.height = rect.bottom - rect.top
-                    mDialogView.directory_picker_list.viewTreeObserver.removeOnGlobalLayoutListener(this)
+                    mDialogView.directory_picker_list.apply {
+                        getGlobalVisibleRect(rect)
+                        layoutParams.height = rect.bottom - rect.top
+                        viewTreeObserver.removeOnGlobalLayoutListener(listener)
+                    }
                 }
             })
 
