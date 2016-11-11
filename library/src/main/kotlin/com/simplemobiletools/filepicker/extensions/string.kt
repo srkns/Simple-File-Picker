@@ -6,9 +6,9 @@ import java.util.regex.Pattern
 fun String.getFilenameFromPath() = substring(lastIndexOf("/") + 1)
 
 fun String.getBasePath(context: Context): String {
-    return if (this.startsWith(context.getInternalStoragePath()))
+    return if (startsWith(context.getInternalStoragePath()))
         context.getInternalStoragePath()
-    else if (!context.getSDCardPath().isEmpty() && this.startsWith(context.getSDCardPath()))
+    else if (!context.getSDCardPath().isEmpty() && startsWith(context.getSDCardPath()))
         context.getSDCardPath()
     else
         "/"

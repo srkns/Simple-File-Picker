@@ -58,17 +58,11 @@ class ItemsAdapter(context: Context, private val mItems: List<FileDirItem>) : Ba
         return mRes.getQuantityString(R.plurals.smtfp_items, children, children)
     }
 
-    override fun getCount(): Int {
-        return mItems.size
-    }
+    override fun getCount() = mItems.size
 
-    override fun getItem(position: Int): Any {
-        return mItems[position]
-    }
+    override fun getItem(position: Int) = mItems[position]
 
-    override fun getItemId(position: Int): Long {
-        return 0
-    }
+    override fun getItemId(position: Int) = 0L
 
     internal class ViewHolder(view: View) {
         val name: TextView = view.item_name

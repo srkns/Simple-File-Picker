@@ -104,9 +104,7 @@ class FilePickerDialog(val activity: Activity,
 
     private fun getTitle() = mContext.resources.getString(if (pickFile) R.string.smtfp_select_file else R.string.smtfp_select_folder)
 
-    private fun dialogDismissed() {
-        listener.onFail(FilePickerResult.DISMISS)
-    }
+    private fun dialogDismissed() = listener.onFail(FilePickerResult.DISMISS)
 
     private fun updateItems() {
         var items = getItems(currPath)
@@ -146,9 +144,7 @@ class FilePickerDialog(val activity: Activity,
         mDialog.dismiss()
     }
 
-    private fun setupBreadcrumbs() {
-        mDialogView.directory_picker_breadcrumbs.setListener(this)
-    }
+    private fun setupBreadcrumbs() = mDialogView.directory_picker_breadcrumbs.setListener(this)
 
     private fun getItems(path: String): List<FileDirItem> {
         val items = ArrayList<FileDirItem>()
@@ -172,7 +168,7 @@ class FilePickerDialog(val activity: Activity,
         if (file.listFiles() == null || !file.isDirectory)
             return 0
 
-        return file.listFiles().filter { !it.isHidden || (it.isHidden && showHidden)}.size
+        return file.listFiles().filter { !it.isHidden || (it.isHidden && showHidden) }.size
     }
 
     private fun containsDirectory(items: List<FileDirItem>): Boolean {
