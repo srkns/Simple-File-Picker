@@ -17,8 +17,8 @@ fun Context.hasStoragePermission(): Boolean {
     return ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 }
 
-fun Context.toast(id: Int) {
-    Toast.makeText(this, id, Toast.LENGTH_SHORT).show()
+fun Context.toast(id: Int, length: Int = Toast.LENGTH_SHORT) {
+    Toast.makeText(this, id, length).show()
 }
 
 fun Context.getSDCardPath(): String {
