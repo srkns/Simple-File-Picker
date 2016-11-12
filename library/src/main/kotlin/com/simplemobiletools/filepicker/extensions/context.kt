@@ -1,6 +1,7 @@
 package com.simplemobiletools.filepicker.extensions
 
 import android.Manifest
+import android.annotation.TargetApi
 import android.content.Context
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
@@ -12,6 +13,7 @@ import android.support.v4.provider.DocumentFile
 import android.widget.Toast
 import com.simplemobiletools.filepicker.R
 import java.io.File
+import java.util.*
 
 fun Context.hasStoragePermission() = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED
 
@@ -19,6 +21,7 @@ fun Context.toast(id: Int, length: Int = Toast.LENGTH_SHORT) = Toast.makeText(th
 
 fun Context.toast(msg: String, duration: Int = Toast.LENGTH_SHORT) = Toast.makeText(this, msg, duration).show()
 
+@TargetApi(Build.VERSION_CODES.LOLLIPOP)
 fun Context.getSDCardPath(): String {
     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
         return ""
@@ -72,14 +75,31 @@ fun Context.getFileDocument(path: String, treeUri: String): DocumentFile {
     return document
 }
 
-fun Context.rescanFile(item: File) {
-    if (item.isDirectory) {
-        for (child in item.listFiles()) {
-            rescanFile(child)
-        }
-    }
-
-    MediaScannerConnection.scanFile(this, arrayOf(item.absolutePath), null, null)
+fun Context.scanFile(item: File, action: () -> Unit) {
+    scanFiles(arrayListOf(item.absolutePath), action)
 }
 
-fun Context.rescanFiles(paths: Array<String>) = MediaScannerConnection.scanFile(this, paths, null, null)
+fun Context.scanFiles(paths: ArrayList<String>, action: () -> Unit) {
+    val allPaths = ArrayList<String>()
+    for (path in paths) {
+        allPaths.addAll(getPaths(File(path)))
+    }
+    var cnt = allPaths.size
+    MediaScannerConnection.scanFile(this, allPaths.toTypedArray(), null, { s, uri ->
+        if (--cnt == 0)
+            action.invoke()
+    })
+}
+
+fun getPaths(file: File): ArrayList<String> {
+    val paths = ArrayList<String>()
+    if (file.isDirectory) {
+        val files = file.listFiles()
+        for (curFile in files) {
+            paths.addAll(getPaths(curFile))
+        }
+    } else {
+        paths.add(file.absolutePath)
+    }
+    return paths
+}
