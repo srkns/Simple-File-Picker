@@ -10,6 +10,7 @@ import com.simplemobiletools.filepicker.dialogs.FilePickerDialog
 import com.simplemobiletools.filepicker.dialogs.FilePickerDialog.FilePickerResult.DISMISS
 import com.simplemobiletools.filepicker.dialogs.FilePickerDialog.FilePickerResult.NO_PERMISSION
 import com.simplemobiletools.filepicker.extensions.hasStoragePermission
+import com.simplemobiletools.filepicker.extensions.humanizePath
 import com.simplemobiletools.filepicker.extensions.toast
 import com.simplemobiletools.filepicker.samples.R
 import kotlinx.android.synthetic.main.activity_main.*
@@ -21,12 +22,16 @@ class MainActivity : AppCompatActivity() {
     val PICK_FOLDER = 2
 
     var action = PICK_FILE
+    var filePath = ""
+    var folderPath = ""
     lateinit var home: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         home = Environment.getExternalStorageDirectory().toString()
+        filePath = home
+        folderPath = home
 
         pick_file_button.setOnClickListener { openDialog(PICK_FILE) }
         pick_folder_button.setOnClickListener { openDialog(PICK_FOLDER) }
@@ -49,26 +54,23 @@ class MainActivity : AppCompatActivity() {
             }
 
             override fun onSuccess(pickedPath: String) {
-                if (action == PICK_FILE)
-                    picked_file_path.text = pickedPath
-                else
-                    picked_folder_path.text = pickedPath
+                if (action == PICK_FILE) {
+                    filePath = File(pickedPath).parent
+                    picked_file_path.text = humanizePath(pickedPath)
+                } else {
+                    folderPath = File(pickedPath).parent
+                    picked_folder_path.text = humanizePath(pickedPath)
+                }
             }
         })
     }
 
     private fun getPath(): String {
-        var path = home
-        if (action == PICK_FILE) {
-            val filePath = picked_file_path.text.toString()
-            if (!filePath.isEmpty())
-                path = File(filePath).parent
+        return if (action == PICK_FILE) {
+            filePath
         } else {
-            val folderPath = picked_folder_path.text.toString()
-            if (!folderPath.isEmpty())
-                path = folderPath
+            folderPath
         }
-        return path
     }
 
     private fun requestStoragePermission() = ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), STORAGE_PERMISSION)
