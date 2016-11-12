@@ -5,6 +5,8 @@ import java.util.regex.Pattern
 
 fun String.getFilenameFromPath() = substring(lastIndexOf("/") + 1)
 
+fun String.getFilenameExtension() = substring(lastIndexOf(".") + 1)
+
 fun String.getBasePath(context: Context): String {
     return if (startsWith(context.getInternalStoragePath()))
         context.getInternalStoragePath()

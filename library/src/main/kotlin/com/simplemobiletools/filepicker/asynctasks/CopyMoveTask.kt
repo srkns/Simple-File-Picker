@@ -4,15 +4,12 @@ import android.content.Context
 import android.os.AsyncTask
 import android.support.v4.util.Pair
 import android.util.Log
-import com.simplemobiletools.filepicker.extensions.getFileDocument
-import com.simplemobiletools.filepicker.extensions.needsStupidWritePermissions
-import com.simplemobiletools.filepicker.extensions.scanFile
-import com.simplemobiletools.filepicker.extensions.scanFiles
+import com.simplemobiletools.filepicker.extensions.*
 import java.io.*
 import java.lang.ref.WeakReference
 import java.util.*
 
-class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, val treeUri: String = "", listener: CopyMoveTask.CopyMoveListener) : AsyncTask<Pair<ArrayList<File>, File>, Void, Boolean>() {
+class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, val treeUri: String = "", val copyMediaOnly: Boolean, listener: CopyMoveTask.CopyMoveListener) : AsyncTask<Pair<ArrayList<File>, File>, Void, Boolean>() {
     private val TAG = CopyMoveTask::class.java.simpleName
     private var mListener: WeakReference<CopyMoveListener>? = null
     private var mMovedFiles: ArrayList<File>
@@ -24,7 +21,10 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
 
     override fun doInBackground(vararg params: Pair<ArrayList<File>, File>): Boolean? {
         val pair = params[0]
-        val files = pair.first
+        var files = pair.first
+        if (copyMediaOnly)
+            files = files.filter(File::isPhotoVideo) as ArrayList<File>
+
         for (file in files) {
             try {
                 val curFile = File(pair.second, file.name)
