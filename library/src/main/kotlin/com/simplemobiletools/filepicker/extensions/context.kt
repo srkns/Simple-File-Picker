@@ -75,17 +75,33 @@ fun Context.getFileDocument(path: String, treeUri: String): DocumentFile {
     return document
 }
 
-fun Context.scanFile(item: File, action: () -> Unit) {
-    scanFiles(arrayListOf(item.absolutePath), action)
+fun Context.scanFile(file: File, action: () -> Unit) {
+    scanFiles(arrayListOf(file), action)
 }
 
-fun Context.scanFiles(paths: ArrayList<String>, action: () -> Unit) {
+fun Context.scanPath(path: String, action: () -> Unit) {
+    scanPaths(arrayListOf(path), action)
+}
+
+fun Context.scanFiles(files: ArrayList<File>, action: () -> Unit) {
+    val allPaths = ArrayList<String>()
+    for (file in files) {
+        allPaths.addAll(getPaths(file))
+    }
+    rescanPaths(allPaths, action)
+}
+
+fun Context.scanPaths(paths: ArrayList<String>, action: () -> Unit) {
     val allPaths = ArrayList<String>()
     for (path in paths) {
         allPaths.addAll(getPaths(File(path)))
     }
-    var cnt = allPaths.size
-    MediaScannerConnection.scanFile(this, allPaths.toTypedArray(), null, { s, uri ->
+    rescanPaths(allPaths, action)
+}
+
+fun Context.rescanPaths(paths: ArrayList<String>, action: () -> Unit) {
+    var cnt = paths.size
+    MediaScannerConnection.scanFile(this, paths.toTypedArray(), null, { s, uri ->
         if (--cnt == 0)
             action.invoke()
     })
