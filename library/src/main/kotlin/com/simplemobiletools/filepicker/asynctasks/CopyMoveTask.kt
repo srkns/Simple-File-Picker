@@ -12,9 +12,9 @@ import java.io.*
 import java.lang.ref.WeakReference
 import java.util.*
 
-class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, val treeUri: String = "", listener: CopyMoveTask.CopyListener) : AsyncTask<Pair<ArrayList<File>, File>, Void, Boolean>() {
+class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, val treeUri: String = "", listener: CopyMoveTask.CopyMoveListener) : AsyncTask<Pair<ArrayList<File>, File>, Void, Boolean>() {
     private val TAG = CopyMoveTask::class.java.simpleName
-    private var mListener: WeakReference<CopyListener>? = null
+    private var mListener: WeakReference<CopyMoveListener>? = null
     private var mMovedFiles: ArrayList<File>
 
     init {
@@ -136,7 +136,7 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
         }
     }
 
-    interface CopyListener {
+    interface CopyMoveListener {
         fun copySucceeded(deleted: Boolean)
 
         fun copyFailed()
