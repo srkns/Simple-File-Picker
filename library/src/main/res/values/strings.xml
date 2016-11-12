@@ -4,6 +4,8 @@
     <string name="smtfp_ok">OK</string>
     <string name="smtfp_cancel">Cancel</string>
     <string name="smtfp_no_permission">Debug: missing Read Storage permission</string>
+    <string name="smtfp_confirm_storage_access_title">Confirm external storage access</string>
+    <string name="smtfp_confirm_storage_access_text">Please choose the root folder of the SD card on the next screen, to grant write access</string>
 
     <!-- Storages -->
     <string name="smtfp_select_storage">Select storage</string>
