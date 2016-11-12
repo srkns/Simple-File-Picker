@@ -41,7 +41,7 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
         if (deleteAfterCopy) {
             for (file in mMovedFiles) {
                 if (context.needsStupidWritePermissions(file.absolutePath)) {
-                    context.getFileDocument(file.absolutePath, treeUri)
+                    context.getFileDocument(file.absolutePath, treeUri).delete()
                 } else {
                     file.delete()
                 }
