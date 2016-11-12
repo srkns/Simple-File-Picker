@@ -9,10 +9,12 @@ import java.io.*
 import java.lang.ref.WeakReference
 import java.util.*
 
-class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, val treeUri: String = "", val copyMediaOnly: Boolean, listener: CopyMoveTask.CopyMoveListener) : AsyncTask<Pair<ArrayList<File>, File>, Void, Boolean>() {
+class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, val treeUri: String = "", val copyMediaOnly: Boolean,
+                   listener: CopyMoveTask.CopyMoveListener) : AsyncTask<Pair<ArrayList<File>, File>, Void, Boolean>() {
     private val TAG = CopyMoveTask::class.java.simpleName
     private var mListener: WeakReference<CopyMoveListener>? = null
     private var mMovedFiles: ArrayList<File>
+    lateinit var mFiles: ArrayList<File>
 
     init {
         mListener = WeakReference(listener)
@@ -21,11 +23,11 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
 
     override fun doInBackground(vararg params: Pair<ArrayList<File>, File>): Boolean? {
         val pair = params[0]
-        var files = pair.first
+        mFiles = pair.first
         if (copyMediaOnly)
-            files = files.filter(File::isPhotoVideo) as ArrayList<File>
+            mFiles = mFiles.filter(File::isPhotoVideo) as ArrayList<File>
 
-        for (file in files) {
+        for (file in mFiles) {
             try {
                 val curFile = File(pair.second, file.name)
                 if (curFile.exists())
@@ -47,7 +49,7 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
                 }
             }
         }
-        context.scanFiles(files) {}
+        context.scanFiles(mFiles) {}
         context.scanFiles(mMovedFiles) {}
         return true
     }
@@ -74,6 +76,9 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
         val children = source.list()
         for (child in children) {
             val newFile = File(source, child)
+            if (newFile.exists())
+                continue
+
             if (context.needsStupidWritePermissions(destination.absolutePath)) {
                 if (newFile.isDirectory) {
                     copyDirectory(newFile, File(destination, child))
@@ -130,14 +135,14 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
         val listener = mListener?.get() ?: return
 
         if (success) {
-            listener.copySucceeded(deleteAfterCopy)
+            listener.copySucceeded(deleteAfterCopy, mFiles.size == mMovedFiles.size)
         } else {
             listener.copyFailed()
         }
     }
 
     interface CopyMoveListener {
-        fun copySucceeded(deleted: Boolean)
+        fun copySucceeded(deleted: Boolean, copiedAll: Boolean)
 
         fun copyFailed()
     }
