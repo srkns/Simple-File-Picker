@@ -4,8 +4,8 @@
     <string name="smtfp_ok">OK</string>
     <string name="smtfp_cancel">Cancelar</string>
     <string name="smtfp_no_permission">Depuração: permissão de leitura ao armazenamento em falta</string>
-    <string name="smtfp_confirm_storage_access_title">Confirm external storage access</string>
-    <string name="smtfp_confirm_storage_access_text">Please choose the root folder of the SD card on the next screen, to grant write access</string>
+    <string name="smtfp_confirm_storage_access_title">Confirmação de acesso ao armazenamento externo</string>
+    <string name="smtfp_confirm_storage_access_text">Por favor escolha a pasta raiz do cartão SD no próximo ecrã para conceder acesso de escrita</string>
 
     <!-- Storages -->
     <string name="smtfp_select_storage">Selecionar armazenamento</string>
