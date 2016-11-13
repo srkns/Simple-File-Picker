@@ -63,6 +63,11 @@ fun Context.isKitkatPlus() = Build.VERSION.SDK_INT >= android.os.Build.VERSION_C
 
 fun Context.needsStupidWritePermissions(path: String) = isPathOnSD(path) && isKitkatPlus() && !getSDCardPath().isEmpty()
 
+fun Context.isAStorageRootFolder(path: String): Boolean {
+    val trimmed = path.trimEnd('/')
+    return trimmed.isEmpty() || trimmed == getInternalStoragePath() || trimmed == getSDCardPath()
+}
+
 fun Context.getFileDocument(path: String, treeUri: String): DocumentFile {
     val relativePath = path.substring(getSDCardPath().length + 1)
     var document = DocumentFile.fromTreeUri(this, Uri.parse(treeUri))
