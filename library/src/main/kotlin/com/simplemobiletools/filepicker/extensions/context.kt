@@ -31,7 +31,7 @@ fun Context.getSDCardPath(): String {
     for (dir in dirs) {
         try {
             if (Environment.isExternalStorageRemovable(dir))
-                return dir.absolutePath
+                return dir.absolutePath.trimEnd('/')
         } catch (e: Exception) {
 
         }
@@ -55,7 +55,7 @@ fun Context.humanizePath(path: String): String {
         path.replaceFirst(basePath, getHumanReadablePath(basePath))
 }
 
-fun Context.getInternalStoragePath() = Environment.getExternalStorageDirectory().toString()
+fun Context.getInternalStoragePath() = Environment.getExternalStorageDirectory().toString().trimEnd('/')
 
 fun Context.isPathOnSD(path: String) = path.startsWith(getSDCardPath())
 
