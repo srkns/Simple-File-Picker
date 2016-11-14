@@ -24,12 +24,11 @@ class MainActivity : AppCompatActivity() {
     var action = PICK_FILE
     var filePath = ""
     var folderPath = ""
-    lateinit var home: String
+    var home = Environment.getExternalStorageDirectory().toString()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        home = Environment.getExternalStorageDirectory().toString()
         filePath = home
         folderPath = home
 
