@@ -115,7 +115,7 @@ fun Context.rescanPaths(paths: ArrayList<String>, action: () -> Unit) {
 fun getPaths(file: File): ArrayList<String> {
     val paths = ArrayList<String>()
     if (file.isDirectory) {
-        val files = file.listFiles()
+        val files = file.listFiles() ?: return paths
         for (curFile in files) {
             paths.addAll(getPaths(curFile))
         }
