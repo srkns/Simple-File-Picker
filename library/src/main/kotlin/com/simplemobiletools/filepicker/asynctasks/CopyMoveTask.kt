@@ -24,8 +24,6 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
     override fun doInBackground(vararg params: Pair<ArrayList<File>, File>): Boolean? {
         val pair = params[0]
         mFiles = pair.first
-        if (copyMediaOnly)
-            mFiles = mFiles.filter(File::isPhotoVideo) as ArrayList<File>
 
         for (file in mFiles) {
             try {
@@ -75,13 +73,14 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
 
         val children = source.list()
         for (child in children) {
-            val newFile = File(source, child)
+            val newFile = File(destination, child)
             if (newFile.exists())
                 continue
 
+            val curFile = File(source, child)
             if (context.needsStupidWritePermissions(destination.absolutePath)) {
                 if (newFile.isDirectory) {
-                    copyDirectory(newFile, File(destination, child))
+                    copyDirectory(curFile, newFile)
                 } else {
                     var document = context.getFileDocument(destination.absolutePath, treeUri)
                     document = document.createFile("", child)
@@ -93,12 +92,15 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
                     mMovedFiles.add(source)
                 }
             } else {
-                copy(newFile, File(destination, child))
+                copy(curFile, newFile)
             }
         }
     }
 
     private fun copyFile(source: File, destination: File) {
+        if (copyMediaOnly && !source.isPhotoVideo())
+            return
+
         val directory = destination.parentFile
         if (!directory.exists() && !directory.mkdirs()) {
             throw IOException("Could not create dir ${directory.absolutePath}")
