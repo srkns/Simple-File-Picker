@@ -7,13 +7,12 @@ class FileDirItem(val path: String, val name: String, val isDirectory: Boolean, 
         Comparable<FileDirItem> {
 
     override fun compareTo(other: FileDirItem): Int {
-        if (isDirectory && !other.isDirectory) {
-            return -1
+        return if (isDirectory && !other.isDirectory) {
+            -1
         } else if (!isDirectory && other.isDirectory) {
-            return 1
-        }
-
-        return name.toLowerCase().compareTo(other.name.toLowerCase())
+            1
+        } else
+            name.toLowerCase().compareTo(other.name.toLowerCase())
     }
 
     override fun toString(): String {
@@ -24,6 +23,7 @@ class FileDirItem(val path: String, val name: String, val isDirectory: Boolean, 
 
     // do not use these methods while scrolling. They are accurate, but slow.
     fun isVideo() = getMimeType().startsWith("video")
+
     fun isImage(): Boolean {
         val options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
