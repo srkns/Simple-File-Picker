@@ -82,14 +82,7 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
                 if (newFile.isDirectory) {
                     copyDirectory(curFile, newFile)
                 } else {
-                    var document = context.getFileDocument(destination.absolutePath, treeUri)
-                    document = document.createFile("", child)
-
-                    val inputStream = FileInputStream(newFile)
-                    val out = context.contentResolver.openOutputStream(document.uri)
-                    copyStream(inputStream, out)
-                    context.scanFile(destination) {}
-                    mMovedFiles.add(source)
+                    copyFile(curFile, newFile)
                 }
             } else {
                 copy(curFile, newFile)
