@@ -1,6 +1,6 @@
 package com.simplemobiletools.filepicker.dialogs
 
-import android.app.Activity
+import android.content.Context
 import android.os.Build
 import android.os.Environment
 import android.support.v7.app.AlertDialog
@@ -13,14 +13,21 @@ import com.simplemobiletools.filepicker.extensions.getBasePath
 import com.simplemobiletools.filepicker.extensions.getInternalStoragePath
 import com.simplemobiletools.filepicker.extensions.getSDCardPath
 
-class StoragePickerDialog(activity: Activity, currPath: String, val listener: OnStoragePickerListener) {
+/**
+ * A dialog for choosing between internal, root, SD card (optional) storage
+ *
+ * @param context: has to be activity context to avoid some Theme.AppCompat issues
+ * @param currPath: current path to decide which storage should be preselected
+ * @param listener: listener to handle storage pick
+ *
+ */
+class StoragePickerDialog(val context: Context, currPath: String, val listener: OnStoragePickerListener) {
     var mDialog: AlertDialog?
-    val mContext = activity
 
     init {
-        val inflater = LayoutInflater.from(mContext)
-        val resources = mContext.resources
-        val basePath = currPath.getBasePath(mContext)
+        val inflater = LayoutInflater.from(context)
+        val resources = context.resources
+        val basePath = currPath.getBasePath(context)
         val layoutParams = RadioGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         val radioGroup = inflater.inflate(R.layout.smtfp_radio_group, null) as RadioGroup
 
@@ -50,8 +57,8 @@ class StoragePickerDialog(activity: Activity, currPath: String, val listener: On
         }
         radioGroup.addView(rootButton, layoutParams)
 
-        mDialog = AlertDialog.Builder(mContext)
-                .setTitle(mContext.resources.getString(R.string.smtfp_select_storage))
+        mDialog = AlertDialog.Builder(context)
+                .setTitle(resources.getString(R.string.smtfp_select_storage))
                 .setView(radioGroup)
                 .create()
 
@@ -60,12 +67,12 @@ class StoragePickerDialog(activity: Activity, currPath: String, val listener: On
 
     private fun internalPicked() {
         mDialog?.dismiss()
-        listener.onPick(mContext.getInternalStoragePath())
+        listener.onPick(context.getInternalStoragePath())
     }
 
     private fun sdPicked() {
         mDialog?.dismiss()
-        listener.onPick(mContext.getSDCardPath())
+        listener.onPick(context.getSDCardPath())
     }
 
     private fun rootPicked() {
@@ -74,7 +81,7 @@ class StoragePickerDialog(activity: Activity, currPath: String, val listener: On
     }
 
     private fun isSDCardAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
-            && !mContext.getSDCardPath().isEmpty()
+            && !context.getSDCardPath().isEmpty()
 
     interface OnStoragePickerListener {
         fun onPick(pickedPath: String)

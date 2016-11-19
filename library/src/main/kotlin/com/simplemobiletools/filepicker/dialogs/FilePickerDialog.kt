@@ -1,6 +1,5 @@
 package com.simplemobiletools.filepicker.dialogs
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.Rect
 import android.os.Environment
@@ -24,33 +23,30 @@ import kotlin.comparisons.compareBy
 /**
  * The only filepicker constructor with a couple optional parameters
  *
- * @param activity use the activity instead of any context to avoid some Theme.AppCompat issues
+ * @param context: has to be activity context to avoid some Theme.AppCompat issues
  * @param currPath initial path of the dialog, defaults to the external storage
  * @param pickFile toggle used to determine if we are picking a file or a folder
  * @param showHidden toggle for showing hidden items, whose name starts with a dot
  * @param listener the callback used for returning the success or failure result to the initiator
  */
-class FilePickerDialog(val activity: Activity,
+class FilePickerDialog(val context: Context,
                        var currPath: String = Environment.getExternalStorageDirectory().toString(),
                        val pickFile: Boolean = true,
                        val showHidden: Boolean = false,
                        val listener: OnFilePickerListener) : Breadcrumbs.BreadcrumbsListener {
 
     var mFirstUpdate = true
-    var mContext: Context
     lateinit var mDialog: AlertDialog
     lateinit var mDialogView: View
 
     init {
-        mContext = activity
-
-        if (!mContext.hasStoragePermission()) {
+        if (!context.hasStoragePermission()) {
             listener.onFail(FilePickerResult.NO_PERMISSION)
         } else {
             if (!File(currPath).exists())
-                currPath = mContext.getInternalStoragePath()
+                currPath = context.getInternalStoragePath()
 
-            mDialogView = LayoutInflater.from(mContext).inflate(R.layout.smtfp_directory_picker, null)
+            mDialogView = LayoutInflater.from(context).inflate(R.layout.smtfp_directory_picker, null)
             updateItems()
             setupBreadcrumbs()
 
@@ -68,7 +64,7 @@ class FilePickerDialog(val activity: Activity,
                 }
             })
 
-            val builder = AlertDialog.Builder(mContext)
+            val builder = AlertDialog.Builder(context)
                     .setTitle(getTitle())
                     .setView(mDialogView)
                     .setNegativeButton(R.string.smtfp_cancel, { dialog, which -> dialogDismissed() })
@@ -102,7 +98,7 @@ class FilePickerDialog(val activity: Activity,
         }
     }
 
-    private fun getTitle() = mContext.resources.getString(if (pickFile) R.string.smtfp_select_file else R.string.smtfp_select_folder)
+    private fun getTitle() = context.resources.getString(if (pickFile) R.string.smtfp_select_file else R.string.smtfp_select_folder)
 
     private fun dialogDismissed() = listener.onFail(FilePickerResult.DISMISS)
 
@@ -115,17 +111,19 @@ class FilePickerDialog(val activity: Activity,
 
         items = items.sortedWith(compareBy({ !it.isDirectory }, { it.name.toLowerCase() }))
 
-        val adapter = ItemsAdapter(mContext, items)
-        mDialogView.directory_picker_list.adapter = adapter
-        mDialogView.directory_picker_breadcrumbs.setBreadcrumb(currPath)
-        mDialogView.directory_picker_list.setOnItemClickListener { adapterView, view, position, id ->
-            val item = items[position]
-            if (item.isDirectory) {
-                currPath = item.path
-                updateItems()
-            } else if (pickFile) {
-                currPath = item.path
-                verifyPath()
+        val adapter = ItemsAdapter(context, items)
+        mDialogView.apply {
+            directory_picker_list.adapter = adapter
+            directory_picker_breadcrumbs.setBreadcrumb(currPath)
+            directory_picker_list.setOnItemClickListener { adapterView, view, position, id ->
+                val item = items[position]
+                if (item.isDirectory) {
+                    currPath = item.path
+                    updateItems()
+                } else if (pickFile) {
+                    currPath = item.path
+                    verifyPath()
+                }
             }
         }
 
@@ -182,7 +180,7 @@ class FilePickerDialog(val activity: Activity,
 
     override fun breadcrumbClicked(id: Int) {
         if (id == 0) {
-            StoragePickerDialog(activity, currPath, object : StoragePickerDialog.OnStoragePickerListener {
+            StoragePickerDialog(context, currPath, object : StoragePickerDialog.OnStoragePickerListener {
                 override fun onPick(pickedPath: String) {
                     currPath = pickedPath
                     updateItems()
