@@ -111,20 +111,19 @@ class FilePickerDialog(val context: Context,
 
         items = items.sortedWith(compareBy({ !it.isDirectory }, { it.name.toLowerCase() }))
 
-        val adapter = ItemsAdapter(context, items)
+        val adapter = ItemsAdapter(context, items) {
+            if (it.isDirectory) {
+                currPath = it.path
+                updateItems()
+            } else if (pickFile) {
+                currPath = it.path
+                verifyPath()
+            }
+        }
+
         mDialogView.apply {
             directory_picker_list.adapter = adapter
             directory_picker_breadcrumbs.setBreadcrumb(currPath)
-            directory_picker_list.setOnItemClickListener { adapterView, view, position, id ->
-                val item = items[position]
-                if (item.isDirectory) {
-                    currPath = item.path
-                    updateItems()
-                } else if (pickFile) {
-                    currPath = item.path
-                    verifyPath()
-                }
-            }
         }
 
         mFirstUpdate = false
@@ -163,19 +162,14 @@ class FilePickerDialog(val context: Context,
     }
 
     private fun getChildren(file: File): Int {
-        if (file.listFiles() == null || !file.isDirectory)
-            return 0
-
-        return file.listFiles().filter { !it.isHidden || (it.isHidden && showHidden) }.size
+        return if (file.listFiles() == null || !file.isDirectory)
+            0
+        else
+            file.listFiles().filter { !it.isHidden || (it.isHidden && showHidden) }.size
     }
 
     private fun containsDirectory(items: List<FileDirItem>): Boolean {
-        for (item in items) {
-            if (item.isDirectory) {
-                return true
-            }
-        }
-        return false
+        return items.any { it.isDirectory }
     }
 
     override fun breadcrumbClicked(id: Int) {
