@@ -146,17 +146,15 @@ class FilePickerDialog(val context: Context,
     private fun getItems(path: String): List<FileDirItem> {
         val items = ArrayList<FileDirItem>()
         val base = File(path)
-        val files = base.listFiles()
-        if (files != null) {
-            for (file in files) {
-                if (!showHidden && file.isHidden)
-                    continue
+        val files = base.listFiles() ?: return items
+        for (file in files) {
+            if (!showHidden && file.isHidden)
+                continue
 
-                val curPath = file.absolutePath
-                val curName = curPath.getFilenameFromPath()
-                val size = file.length()
-                items.add(FileDirItem(curPath, curName, file.isDirectory, getChildren(file), size))
-            }
+            val curPath = file.absolutePath
+            val curName = curPath.getFilenameFromPath()
+            val size = file.length()
+            items.add(FileDirItem(curPath, curName, file.isDirectory, getChildren(file), size))
         }
         return items
     }
@@ -168,9 +166,7 @@ class FilePickerDialog(val context: Context,
             file.listFiles().filter { !it.isHidden || (it.isHidden && showHidden) }.size
     }
 
-    private fun containsDirectory(items: List<FileDirItem>): Boolean {
-        return items.any { it.isDirectory }
-    }
+    private fun containsDirectory(items: List<FileDirItem>) = items.any { it.isDirectory }
 
     override fun breadcrumbClicked(id: Int) {
         if (id == 0) {
