@@ -15,6 +15,7 @@ import com.simplemobiletools.filepicker.extensions.getInternalStoragePath
 import com.simplemobiletools.filepicker.extensions.hasStoragePermission
 import com.simplemobiletools.filepicker.models.FileDirItem
 import com.simplemobiletools.filepicker.views.Breadcrumbs
+import com.simplemobiletools.filepicker.views.RecyclerViewDivider
 import kotlinx.android.synthetic.main.smtfp_directory_picker.view.*
 import java.io.File
 import java.util.*
@@ -123,6 +124,7 @@ class FilePickerDialog(val context: Context,
 
         mDialogView.apply {
             directory_picker_list.adapter = adapter
+            directory_picker_list.addItemDecoration(RecyclerViewDivider(context))
             directory_picker_breadcrumbs.setBreadcrumb(currPath)
         }
 

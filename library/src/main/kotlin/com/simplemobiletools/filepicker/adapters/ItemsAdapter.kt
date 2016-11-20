@@ -15,20 +15,20 @@ import kotlinx.android.synthetic.main.smtfp_list_item.view.*
 import java.io.File
 
 class ItemsAdapter(val context: Context, private val mItems: List<FileDirItem>, val itemClick: (FileDirItem) -> Unit) :
-        RecyclerView.Adapter<ItemsAdapter.MyViewHolder>() {
+        RecyclerView.Adapter<ItemsAdapter.ViewHolder>() {
 
-    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): MyViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup?, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent?.context).inflate(R.layout.smtfp_list_item, parent, false)
-        return MyViewHolder(context, view, itemClick)
+        return ViewHolder(context, view, itemClick)
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.bindView(mItems[position])
     }
 
     override fun getItemCount() = mItems.size
 
-    class MyViewHolder(val context: Context, view: View, val itemClick: (FileDirItem) -> (Unit)) : RecyclerView.ViewHolder(view) {
+    class ViewHolder(val context: Context, view: View, val itemClick: (FileDirItem) -> (Unit)) : RecyclerView.ViewHolder(view) {
         fun bindView(fileDirItem: FileDirItem) {
             itemView.item_name.text = fileDirItem.name
 
