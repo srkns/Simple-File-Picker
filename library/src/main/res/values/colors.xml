@@ -3,5 +3,5 @@
     <color name="smtfp_thumbnail_grey">#33000000</color>
     <color name="smtfp_pressed_item_foreground">#08000000</color>
     <color name="smtfp_activated_item_foreground">#44888888</color>
-    <color name="smtfp_divider_grey">#66cccccc</color>
+    <color name="smtfp_divider_grey">#44cccccc</color>
 </resources>
