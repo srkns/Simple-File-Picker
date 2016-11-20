@@ -91,7 +91,7 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
     }
 
     private fun copyFile(source: File, destination: File) {
-        if (copyMediaOnly && !source.isPhotoVideo())
+        if (copyMediaOnly && !source.isImageVideoGif())
             return
 
         val directory = destination.parentFile
