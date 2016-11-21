@@ -1,9 +1,9 @@
 package com.simplemobiletools.filepicker.dialogs
 
+import android.app.AlertDialog
 import android.content.Context
 import android.os.Build
 import android.os.Environment
-import android.support.v7.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.RadioButton

@@ -1,7 +1,7 @@
 package com.simplemobiletools.filepicker.dialogs
 
+import android.app.AlertDialog
 import android.content.Context
-import android.support.v7.app.AlertDialog
 import com.simplemobiletools.filepicker.R
 
 /**
