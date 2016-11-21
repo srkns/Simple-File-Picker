@@ -11,10 +11,10 @@ import com.simplemobiletools.filepicker.R
  * @param message: the dialogs message ID
  * @param positive: positive buttons text ID
  * @param negative: negative buttons text ID (optional)
- * @param listener: callback listening for positive button press
+ * @param callback: an anonymous function
  */
 class ConfirmationDialog(context: Context, message: Int = R.string.smtfp_proceed_with_deletion, positive: Int = R.string.smtfp_yes,
-                         negative: Int = R.string.smtfp_no, val listener: OnConfirmedListener) {
+                         negative: Int = R.string.smtfp_no, val callback: () -> Unit) {
     var dialog: AlertDialog? = null
 
     init {
@@ -31,10 +31,6 @@ class ConfirmationDialog(context: Context, message: Int = R.string.smtfp_proceed
 
     private fun dialogConfirmed() {
         dialog?.dismiss()
-        listener.onConfirmed()
-    }
-
-    interface OnConfirmedListener {
-        fun onConfirmed()
+        callback.invoke()
     }
 }

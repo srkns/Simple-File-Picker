@@ -18,10 +18,10 @@ import com.simplemobiletools.filepicker.extensions.getSDCardPath
  *
  * @param context: has to be activity context to avoid some Theme.AppCompat issues
  * @param currPath: current path to decide which storage should be preselected
- * @param listener: listener to handle storage pick
+ * @param callback: an anonymous function
  *
  */
-class StoragePickerDialog(val context: Context, currPath: String, val listener: OnStoragePickerListener) {
+class StoragePickerDialog(val context: Context, currPath: String, val callback: (pickedPath: String) -> Unit) {
     var mDialog: AlertDialog?
 
     init {
@@ -67,23 +67,19 @@ class StoragePickerDialog(val context: Context, currPath: String, val listener: 
 
     private fun internalPicked() {
         mDialog?.dismiss()
-        listener.onPick(context.getInternalStoragePath())
+        callback.invoke(context.getInternalStoragePath())
     }
 
     private fun sdPicked() {
         mDialog?.dismiss()
-        listener.onPick(context.getSDCardPath())
+        callback.invoke(context.getSDCardPath())
     }
 
     private fun rootPicked() {
         mDialog?.dismiss()
-        listener.onPick("/")
+        callback.invoke("/")
     }
 
     private fun isSDCardAvailable() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED
             && !context.getSDCardPath().isEmpty()
-
-    interface OnStoragePickerListener {
-        fun onPick(pickedPath: String)
-    }
 }
