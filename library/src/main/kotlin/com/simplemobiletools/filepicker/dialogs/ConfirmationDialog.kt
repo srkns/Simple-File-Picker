@@ -5,22 +5,27 @@ import android.support.v7.app.AlertDialog
 import com.simplemobiletools.filepicker.R
 
 /**
- * A simple dialog without any view, just a message, a positive button and optionally a negative button
+ * A simple dialog without any view, just a messageId, a positive button and optionally a negative button
  *
  * @param context: has to be activity context to avoid some Theme.AppCompat issues
- * @param message: the dialogs message ID
+ * @param message: the dialogs message, can be any String. If empty, messageId is used
+ * @param messageId: the dialogs messageId ID. Used only if message is empty
  * @param positive: positive buttons text ID
  * @param negative: negative buttons text ID (optional)
  * @param callback: an anonymous function
  */
-class ConfirmationDialog(context: Context, message: Int = R.string.smtfp_proceed_with_deletion, positive: Int = R.string.smtfp_yes,
+class ConfirmationDialog(context: Context, message: String = "", messageId: Int = R.string.smtfp_proceed_with_deletion, positive: Int = R.string.smtfp_yes,
                          negative: Int = R.string.smtfp_no, val callback: () -> Unit) {
     var dialog: AlertDialog? = null
 
     init {
         val builder = AlertDialog.Builder(context)
-                .setMessage(message)
                 .setPositiveButton(positive, { dialog, which -> dialogConfirmed() })
+
+        if (message.isEmpty())
+            builder.setMessage(messageId)
+        else
+            builder.setMessage(message)
 
         if (negative != 0)
             builder.setNegativeButton(negative, null)
