@@ -8,8 +8,8 @@ import com.simplemobiletools.filepicker.R
 /**
  * A dialog for displaying the steps needed to confirm SD card write access on Android 5+
  *
- * @param context: has to be activity context to avoid some Theme.AppCompat issues
- * @param callback: an anonymous function
+ * @param context has to be activity context to avoid some Theme.AppCompat issues
+ * @param callback an anonymous function
  *
  */
 class WritePermissionDialog(context: Context, val callback: () -> Unit) {

@@ -24,7 +24,7 @@ import kotlin.comparisons.compareBy
 /**
  * The only filepicker constructor with a couple optional parameters
  *
- * @param context: has to be activity context to avoid some Theme.AppCompat issues
+ * @param context has to be activity context to avoid some Theme.AppCompat issues
  * @param currPath initial path of the dialog, defaults to the external storage
  * @param pickFile toggle used to determine if we are picking a file or a folder
  * @param showHidden toggle for showing hidden items, whose name starts with a dot

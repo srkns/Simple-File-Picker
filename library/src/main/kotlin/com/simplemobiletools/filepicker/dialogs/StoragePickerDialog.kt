@@ -16,9 +16,9 @@ import com.simplemobiletools.filepicker.extensions.getSDCardPath
 /**
  * A dialog for choosing between internal, root, SD card (optional) storage
  *
- * @param context: has to be activity context to avoid some Theme.AppCompat issues
- * @param currPath: current path to decide which storage should be preselected
- * @param callback: an anonymous function
+ * @param context has to be activity context to avoid some Theme.AppCompat issues
+ * @param currPath current path to decide which storage should be preselected
+ * @param callback an anonymous function
  *
  */
 class StoragePickerDialog(val context: Context, currPath: String, val callback: (pickedPath: String) -> Unit) {
