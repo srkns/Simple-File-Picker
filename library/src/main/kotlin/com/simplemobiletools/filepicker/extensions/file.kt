@@ -24,6 +24,7 @@ fun File.isVideoFast(): Boolean {
 }
 
 fun File.isVideoSlow() = getMimeType(path).startsWith("video")
+fun File.isAudioSlow() = getMimeType(path).startsWith("audio")
 
 fun getMimeType(path: String): String {
     return try {
