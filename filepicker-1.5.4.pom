@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.simplemobiletools</groupId>
     <artifactId>filepicker</artifactId>
-    <version>1.5.2</version>
+    <version>1.5.4</version>
     <packaging>jar</packaging>
     <name>Filepicker</name>
     <description>A simple file and directory picker library.</description>
