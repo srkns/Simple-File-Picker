@@ -1,0 +1,23 @@
+<resources>
+    <string name="smtfp_select_folder">Seleccione una carpeta</string>
+    <string name="smtfp_select_file">Seleccione un archivo</string>
+    <string name="smtfp_ok">OK</string>
+    <string name="smtfp_cancel">Cancelar</string>
+    <string name="smtfp_no_permission">Depuración: No se tiene permiso de lectura del almacenamiento</string>
+    <string name="smtfp_confirm_storage_access_title">Confirmación de acceso al almacenamiento externo</string>
+    <string name="smtfp_confirm_storage_access_text">Por favor, elija la carpeta raíz de la tarjeta SD en la próxima pantalla para conceder el acceso de escritura</string>
+    <string name="smtfp_proceed_with_deletion">¿Está seguro de querer continuar con la eliminación?</string>
+    <string name="smtfp_yes">Sí</string>
+    <string name="smtfp_no">No</string>
+
+    <!-- Storages -->
+    <string name="smtfp_select_storage">Seleccione almacenamiento</string>
+    <string name="smtfp_internal">Almacenamiento interno</string>
+    <string name="smtfp_sd_card">Tarjeta SD</string>
+    <string name="smtfp_root">Raíz /</string>
+
+    <plurals name="smtfp_items">
+        <item quantity="one">1 elemento</item>
+        <item quantity="other">%1$d elementos</item>
+    </plurals>
+</resources>
