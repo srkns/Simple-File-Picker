@@ -1,20 +1,20 @@
 <resources>
-    <string name="smtfp_select_folder">Select a folder</string>
-    <string name="smtfp_select_file">Select a file</string>
+    <string name="smtfp_select_folder">フォルダーを選択</string>
+    <string name="smtfp_select_file">ファイルを選択</string>
     <string name="smtfp_ok">OK</string>
-    <string name="smtfp_cancel">Cancel</string>
-    <string name="smtfp_no_permission">Debug: missing Read Storage permission</string>
-    <string name="smtfp_confirm_storage_access_title">Confirm external storage access</string>
-    <string name="smtfp_confirm_storage_access_text">Please choose the root folder of the SD card on the next screen, to grant write access</string>
-    <string name="smtfp_proceed_with_deletion">Are you sure you want to proceed with the deletion?</string>
-    <string name="smtfp_yes">Yes</string>
-    <string name="smtfp_no">No</string>
+    <string name="smtfp_cancel">キャンセル</string>
+    <string name="smtfp_no_permission">デバッグ: 読み取りストレージアクセス許可がありません</string>
+    <string name="smtfp_confirm_storage_access_title">外部ストレージのアクセスを確認してください</string>
+    <string name="smtfp_confirm_storage_access_text">次の画面で SD カードのルートフォルダーを選択して、書き込みアクセス許可を付与してください</string>
+    <string name="smtfp_proceed_with_deletion">削除を続行してもよろしいですか?</string>
+    <string name="smtfp_yes">はい</string>
+    <string name="smtfp_no">いいえ</string>
 
     <!-- Storages -->
-    <string name="smtfp_select_storage">Select storage</string>
-    <string name="smtfp_internal">Internal</string>
-    <string name="smtfp_sd_card">SD Card</string>
-    <string name="smtfp_root">Root</string>
+    <string name="smtfp_select_storage">ストレージを選択</string>
+    <string name="smtfp_internal">内部</string>
+    <string name="smtfp_sd_card">SD カード</string>
+    <string name="smtfp_root">ルート</string>
 
     <plurals name="smtfp_items">
         <item quantity="one">1 アイテム</item>
