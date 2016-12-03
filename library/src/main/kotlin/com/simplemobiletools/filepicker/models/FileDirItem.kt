@@ -12,5 +12,5 @@ class FileDirItem(val path: String, val name: String, val isDirectory: Boolean, 
             name.toLowerCase().compareTo(other.name.toLowerCase())
     }
 
-    override fun toString() = "FileDirItem{name=$name, isDirectory=$isDirectory, path=$path, children=$children, size=$size}"
+    override fun toString() = "FileDirItem{path=$path, name=$name, isDirectory=$isDirectory, children=$children, size=$size}"
 }
