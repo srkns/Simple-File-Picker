@@ -31,6 +31,7 @@ class ConfirmationDialog(context: Context, message: String = "", messageId: Int 
             builder.setNegativeButton(negative, null)
 
         dialog = builder.create()
+        dialog!!.setCanceledOnTouchOutside(true)
         dialog!!.show()
     }
 

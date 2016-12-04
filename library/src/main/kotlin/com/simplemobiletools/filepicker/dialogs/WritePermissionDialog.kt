@@ -24,7 +24,8 @@ class WritePermissionDialog(context: Context, val callback: () -> Unit) {
                 .setPositiveButton(R.string.smtfp_ok, { dialog, which -> dialogConfirmed() })
                 .create()
 
-        dialog?.show()
+        dialog!!.setCanceledOnTouchOutside(true)
+        dialog!!.show()
     }
 
     private fun dialogConfirmed() {

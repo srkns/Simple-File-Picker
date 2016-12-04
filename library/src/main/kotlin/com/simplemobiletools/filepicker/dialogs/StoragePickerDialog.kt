@@ -62,7 +62,8 @@ class StoragePickerDialog(val context: Context, currPath: String, val callback: 
                 .setView(radioGroup)
                 .create()
 
-        mDialog?.show()
+        mDialog!!.setCanceledOnTouchOutside(true)
+        mDialog!!.show()
     }
 
     private fun internalPicked() {

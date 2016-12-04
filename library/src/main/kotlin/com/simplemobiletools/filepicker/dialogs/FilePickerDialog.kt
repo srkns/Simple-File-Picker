@@ -89,6 +89,7 @@ class FilePickerDialog(val context: Context,
                 builder.setPositiveButton(R.string.smtfp_ok, null)
 
             mDialog = builder.create()
+            mDialog.setCanceledOnTouchOutside(true)
             mDialog.show()
 
             if (!pickFile) {
