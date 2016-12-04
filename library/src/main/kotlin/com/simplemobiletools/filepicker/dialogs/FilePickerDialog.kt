@@ -4,6 +4,8 @@ import android.app.AlertDialog
 import android.content.Context
 import android.graphics.Rect
 import android.os.Environment
+import android.os.Parcelable
+import android.support.v7.widget.LinearLayoutManager
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -37,6 +39,9 @@ class FilePickerDialog(val context: Context,
                        val listener: OnFilePickerListener) : Breadcrumbs.BreadcrumbsListener {
 
     var mFirstUpdate = true
+    var mPrevPath = ""
+    var mScrollStates = HashMap<String, Parcelable>()
+
     lateinit var mDialog: AlertDialog
     lateinit var mDialogView: View
 
@@ -123,13 +128,18 @@ class FilePickerDialog(val context: Context,
             }
         }
 
+        val layoutManager = mDialogView.directory_picker_list.layoutManager as LinearLayoutManager
+        mScrollStates.put(mPrevPath.trimEnd('/'), layoutManager.onSaveInstanceState())
+
         mDialogView.apply {
             directory_picker_list.adapter = adapter
             directory_picker_list.addItemDecoration(RecyclerViewDivider(context))
             directory_picker_breadcrumbs.setBreadcrumb(currPath)
         }
 
+        layoutManager.onRestoreInstanceState(mScrollStates[currPath.trimEnd('/')])
         mFirstUpdate = false
+        mPrevPath = currPath
     }
 
     private fun verifyPath() {
