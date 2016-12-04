@@ -14,7 +14,7 @@ fun File.isImageFast(): Boolean {
     return photoExtensions.any { filename.endsWith(it) }
 }
 
-fun File.isImageSlow() = getMimeType(path).startsWith("image")
+fun File.isImageSlow() = isImageFast() || getMimeType(path).startsWith("image")
 
 // fast extension check, not guaranteed to be accurate
 fun File.isVideoFast(): Boolean {
@@ -23,7 +23,7 @@ fun File.isVideoFast(): Boolean {
     return videoExtensions.any { filename.endsWith(it) }
 }
 
-fun File.isVideoSlow() = getMimeType(path).startsWith("video")
+fun File.isVideoSlow() = isVideoFast() || getMimeType(path).startsWith("video")
 fun File.isAudioSlow() = getMimeType(path).startsWith("audio")
 
 fun getMimeType(path: String): String {
