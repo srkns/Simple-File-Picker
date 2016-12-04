@@ -199,9 +199,9 @@ class FilePickerDialog(val context: Context,
     }
 
     interface OnFilePickerListener {
-        fun onFail(error: FilePickerResult)
-
         fun onSuccess(pickedPath: String)
+
+        fun onFail(error: FilePickerResult)
     }
 
     enum class FilePickerResult() {
