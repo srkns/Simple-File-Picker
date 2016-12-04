@@ -132,8 +132,10 @@ class FilePickerDialog(val context: Context,
         mScrollStates.put(mPrevPath.trimEnd('/'), layoutManager.onSaveInstanceState())
 
         mDialogView.apply {
+            if (directory_picker_list.adapter == null)
+                directory_picker_list.addItemDecoration(RecyclerViewDivider(context))
+
             directory_picker_list.adapter = adapter
-            directory_picker_list.addItemDecoration(RecyclerViewDivider(context))
             directory_picker_breadcrumbs.setBreadcrumb(currPath)
         }
 
