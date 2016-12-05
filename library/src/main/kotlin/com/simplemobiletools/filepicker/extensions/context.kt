@@ -57,7 +57,7 @@ fun Context.humanizePath(path: String): String {
 
 fun Context.getInternalStoragePath() = Environment.getExternalStorageDirectory().toString().trimEnd('/')
 
-fun Context.isPathOnSD(path: String) = path.startsWith(getSDCardPath())
+fun Context.isPathOnSD(path: String) = getSDCardPath().isNotEmpty() && path.startsWith(getSDCardPath())
 
 fun Context.isKitkatPlus() = Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT
 
