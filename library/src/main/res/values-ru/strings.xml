@@ -1,0 +1,23 @@
+<resources>
+    <string name="smtfp_select_folder">Выбор папки</string>
+    <string name="smtfp_select_file">Выбор файла</string>
+    <string name="smtfp_ok">OK</string>
+    <string name="smtfp_cancel">Отмена</string>
+    <string name="smtfp_no_permission">Отладка: отсутствует разрешение чтения памяти</string>
+    <string name="smtfp_confirm_storage_access_title">Предоставление доступа к внешнему накопителю</string>
+    <string name="smtfp_confirm_storage_access_text">Чтобы предоставить право на запись, пожалуйста, выберите корневую папку SD-карты на следующем шаге</string>
+    <string name="smtfp_proceed_with_deletion">Действительно хотите удалить?</string>
+    <string name="smtfp_yes">Да</string>
+    <string name="smtfp_no">Нет</string>
+
+    <!-- Storages -->
+    <string name="smtfp_select_storage">Выбрать хранилище</string>
+    <string name="smtfp_internal">Внутренняя память</string>
+    <string name="smtfp_sd_card">SD-карта</string>
+    <string name="smtfp_root">Корневая папка</string>
+
+    <plurals name="smtfp_items">
+        <item quantity="one">1 объект</item>
+        <item quantity="other">объектов: %1$d</item>
+    </plurals>
+</resources>
