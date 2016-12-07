@@ -49,16 +49,18 @@ class CopyMoveTask(val activity: Context, val deleteAfterCopy: Boolean = false, 
                 }
             }
         }
+
         activity.scanFiles(mFiles) {}
         activity.scanFiles(mMovedFiles) {}
 
         for (file in mNewFiles) {
-            val filesUri = MediaStore.Files.getContentUri("external")
-
+            val uri = if (file.isImageSlow()) MediaStore.Images.Media.EXTERNAL_CONTENT_URI else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
             val values = ContentValues()
             values.put(MediaStore.MediaColumns.DATA, file.absolutePath)
             values.put(MediaStore.MediaColumns.SIZE, file.length())
-            activity.contentResolver.insert(filesUri, values)
+            values.put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
+            values.put(MediaStore.MediaColumns.TITLE, file.name)
+            activity.contentResolver.insert(uri, values)
         }
 
         return true
