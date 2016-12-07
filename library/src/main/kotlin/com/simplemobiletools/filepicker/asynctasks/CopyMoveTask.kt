@@ -1,7 +1,9 @@
 package com.simplemobiletools.filepicker.asynctasks
 
+import android.content.ContentValues
 import android.content.Context
 import android.os.AsyncTask
+import android.provider.MediaStore
 import android.support.v4.util.Pair
 import android.util.Log
 import com.simplemobiletools.filepicker.extensions.*
@@ -9,16 +11,16 @@ import java.io.*
 import java.lang.ref.WeakReference
 import java.util.*
 
-class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, val treeUri: String = "", val copyMediaOnly: Boolean,
+class CopyMoveTask(val activity: Context, val deleteAfterCopy: Boolean = false, val treeUri: String = "", val copyMediaOnly: Boolean,
                    listener: CopyMoveTask.CopyMoveListener) : AsyncTask<Pair<ArrayList<File>, File>, Void, Boolean>() {
     private val TAG = CopyMoveTask::class.java.simpleName
     private var mListener: WeakReference<CopyMoveListener>? = null
-    private var mMovedFiles: ArrayList<File>
+    private var mMovedFiles: ArrayList<File> = ArrayList()
+    private var mNewFiles: ArrayList<File> = ArrayList()
     lateinit var mFiles: ArrayList<File>
 
     init {
         mListener = WeakReference(listener)
-        mMovedFiles = arrayListOf()
     }
 
     override fun doInBackground(vararg params: Pair<ArrayList<File>, File>): Boolean? {
@@ -40,15 +42,25 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
 
         if (deleteAfterCopy) {
             for (file in mMovedFiles) {
-                if (context.needsStupidWritePermissions(file.absolutePath)) {
-                    context.getFileDocument(file.absolutePath, treeUri).delete()
+                if (activity.needsStupidWritePermissions(file.absolutePath)) {
+                    activity.getFileDocument(file.absolutePath, treeUri).delete()
                 } else {
                     file.delete()
                 }
             }
         }
-        context.scanFiles(mFiles) {}
-        context.scanFiles(mMovedFiles) {}
+        activity.scanFiles(mFiles) {}
+        activity.scanFiles(mMovedFiles) {}
+
+        for (file in mNewFiles) {
+            val filesUri = MediaStore.Files.getContentUri("external")
+
+            val values = ContentValues()
+            values.put(MediaStore.MediaColumns.DATA, file.absolutePath)
+            values.put(MediaStore.MediaColumns.SIZE, file.length())
+            activity.contentResolver.insert(filesUri, values)
+        }
+
         return true
     }
 
@@ -63,8 +75,8 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
 
     private fun copyDirectory(source: File, destination: File) {
         if (!destination.exists()) {
-            if (context.needsStupidWritePermissions(destination.absolutePath)) {
-                val document = context.getFileDocument(destination.absolutePath, treeUri)
+            if (activity.needsStupidWritePermissions(destination.absolutePath)) {
+                val document = activity.getFileDocument(destination.absolutePath, treeUri)
                 document.createDirectory(destination.name)
             } else if (!destination.mkdirs()) {
                 throw IOException("Could not create dir ${destination.absolutePath}")
@@ -78,7 +90,7 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
                 continue
 
             val curFile = File(source, child)
-            if (context.needsStupidWritePermissions(destination.absolutePath)) {
+            if (activity.needsStupidWritePermissions(destination.absolutePath)) {
                 if (newFile.isDirectory) {
                     copyDirectory(curFile, newFile)
                 } else {
@@ -101,18 +113,19 @@ class CopyMoveTask(val context: Context, val deleteAfterCopy: Boolean = false, v
 
         val inputStream = FileInputStream(source)
         val out: OutputStream?
-        if (context.needsStupidWritePermissions(destination.absolutePath)) {
-            var document = context.getFileDocument(destination.absolutePath, treeUri)
+        if (activity.needsStupidWritePermissions(destination.absolutePath)) {
+            var document = activity.getFileDocument(destination.absolutePath, treeUri)
             document = document.createFile("", destination.name)
 
-            out = context.contentResolver.openOutputStream(document.uri)
+            out = activity.contentResolver.openOutputStream(document.uri)
         } else {
             out = FileOutputStream(destination)
         }
 
         copyStream(inputStream, out)
-        context.scanFile(destination) {}
+        activity.scanFile(destination) {}
         mMovedFiles.add(source)
+        mNewFiles.add(destination)
     }
 
     private fun copyStream(inputStream: InputStream, out: OutputStream?) {
