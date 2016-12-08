@@ -1,7 +1,7 @@
 package com.simplemobiletools.filepicker.asynctasks
 
+import android.app.Activity
 import android.content.ContentValues
-import android.content.Context
 import android.os.AsyncTask
 import android.provider.MediaStore
 import android.support.v4.util.Pair
@@ -11,7 +11,7 @@ import java.io.*
 import java.lang.ref.WeakReference
 import java.util.*
 
-class CopyMoveTask(val activity: Context, val deleteAfterCopy: Boolean = false, val treeUri: String = "", val copyMediaOnly: Boolean,
+class CopyMoveTask(val activity: Activity, val deleteAfterCopy: Boolean = false, val treeUri: String = "", val copyMediaOnly: Boolean,
                    listener: CopyMoveTask.CopyMoveListener) : AsyncTask<Pair<ArrayList<File>, File>, Void, Boolean>() {
     private val TAG = CopyMoveTask::class.java.simpleName
     private var mListener: WeakReference<CopyMoveListener>? = null
