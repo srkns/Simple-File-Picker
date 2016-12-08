@@ -26,7 +26,7 @@ fun File.isVideoFast(): Boolean {
 fun File.isVideoSlow() = isVideoFast() || getMimeType(path).startsWith("video")
 fun File.isAudioSlow() = getMimeType(path).startsWith("audio")
 
-fun getMimeType(path: String): String {
+fun File.getMimeType(path: String): String {
     return try {
         val retriever = MediaMetadataRetriever()
         retriever.setDataSource(path)

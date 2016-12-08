@@ -8,6 +8,7 @@ import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.support.v4.content.ContextCompat
 import android.support.v4.provider.DocumentFile
 import android.widget.Toast
@@ -123,4 +124,17 @@ fun getPaths(file: File): ArrayList<String> {
         paths.add(file.absolutePath)
     }
     return paths
+}
+
+// this updates the mediastore instantly, MediaScannerConnection.scanFile takes some time to really update the files
+fun Context.deleteFromMediaStore(file: File) = contentResolver.delete(getFileUri(file), "${MediaStore.MediaColumns.DATA} = '${file.absolutePath}'", null) == 1
+
+fun Context.getFileUri(file: File): Uri {
+    return if (file.isImageSlow()) {
+        MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+    } else if (file.isVideoSlow()) {
+        MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+    } else {
+        MediaStore.Files.getContentUri("external")
+    }
 }
