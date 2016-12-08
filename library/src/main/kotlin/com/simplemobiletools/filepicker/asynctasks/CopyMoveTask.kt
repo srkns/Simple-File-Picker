@@ -1,9 +1,7 @@
 package com.simplemobiletools.filepicker.asynctasks
 
 import android.app.Activity
-import android.content.ContentValues
 import android.os.AsyncTask
-import android.provider.MediaStore
 import android.support.v4.util.Pair
 import android.util.Log
 import com.simplemobiletools.filepicker.extensions.*
@@ -16,7 +14,6 @@ class CopyMoveTask(val activity: Activity, val deleteAfterCopy: Boolean = false,
     private val TAG = CopyMoveTask::class.java.simpleName
     private var mListener: WeakReference<CopyMoveListener>? = null
     private var mMovedFiles: ArrayList<File> = ArrayList()
-    private var mNewFiles: ArrayList<File> = ArrayList()
     lateinit var mFiles: ArrayList<File>
 
     init {
@@ -52,17 +49,6 @@ class CopyMoveTask(val activity: Activity, val deleteAfterCopy: Boolean = false,
 
         activity.scanFiles(mFiles) {}
         activity.scanFiles(mMovedFiles) {}
-
-        for (file in mNewFiles) {
-            val uri = if (file.isImageSlow()) MediaStore.Images.Media.EXTERNAL_CONTENT_URI else MediaStore.Video.Media.EXTERNAL_CONTENT_URI
-            ContentValues().apply {
-                put(MediaStore.MediaColumns.DATA, file.absolutePath)
-                put(MediaStore.MediaColumns.SIZE, file.length())
-                put(MediaStore.MediaColumns.DISPLAY_NAME, file.name)
-                put(MediaStore.MediaColumns.TITLE, file.name)
-                activity.contentResolver.insert(uri, this)
-            }
-        }
 
         return true
     }
@@ -128,7 +114,6 @@ class CopyMoveTask(val activity: Activity, val deleteAfterCopy: Boolean = false,
         copyStream(inputStream, out)
         activity.scanFile(destination) {}
         mMovedFiles.add(source)
-        mNewFiles.add(destination)
     }
 
     private fun copyStream(inputStream: InputStream, out: OutputStream?) {
