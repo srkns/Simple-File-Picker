@@ -14,7 +14,7 @@ fun File.isImageFast(): Boolean {
     return photoExtensions.any { filename.endsWith(it) }
 }
 
-fun File.isImageSlow() = isImageFast() || getMimeType(path).startsWith("image")
+fun File.isImageSlow() = isImageFast() || getMimeType().startsWith("image")
 
 // fast extension check, not guaranteed to be accurate
 fun File.isVideoFast(): Boolean {
@@ -23,10 +23,10 @@ fun File.isVideoFast(): Boolean {
     return videoExtensions.any { filename.endsWith(it) }
 }
 
-fun File.isVideoSlow() = isVideoFast() || getMimeType(path).startsWith("video")
-fun File.isAudioSlow() = getMimeType(path).startsWith("audio")
+fun File.isVideoSlow() = isVideoFast() || getMimeType().startsWith("video")
+fun File.isAudioSlow() = getMimeType().startsWith("audio")
 
-fun File.getMimeType(path: String): String {
+fun File.getMimeType(): String {
     return try {
         val retriever = MediaMetadataRetriever()
         retriever.setDataSource(path)
