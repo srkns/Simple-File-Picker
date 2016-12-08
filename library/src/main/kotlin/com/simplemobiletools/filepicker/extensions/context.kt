@@ -143,7 +143,6 @@ fun Context.deleteFromMediaStore(file: File) = contentResolver.delete(getFileUri
 fun Context.updateInMediaStore(oldFile: File, newFile: File): Boolean {
     val values = ContentValues().apply {
         put(MediaStore.MediaColumns.DATA, newFile.absolutePath)
-        put(MediaStore.MediaColumns.SIZE, newFile.length())
         put(MediaStore.MediaColumns.DISPLAY_NAME, newFile.name)
         put(MediaStore.MediaColumns.TITLE, newFile.name)
     }
