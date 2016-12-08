@@ -2,6 +2,7 @@ package com.simplemobiletools.filepicker.extensions
 
 import android.Manifest
 import android.annotation.TargetApi
+import android.content.ContentValues
 import android.content.Context
 import android.content.pm.PackageManager
 import android.media.MediaScannerConnection
@@ -126,9 +127,6 @@ fun getPaths(file: File): ArrayList<String> {
     return paths
 }
 
-// this updates the mediastore instantly, MediaScannerConnection.scanFile takes some time to really update the files
-fun Context.deleteFromMediaStore(file: File) = contentResolver.delete(getFileUri(file), "${MediaStore.MediaColumns.DATA} = '${file.absolutePath}'", null) == 1
-
 fun Context.getFileUri(file: File): Uri {
     return if (file.isImageSlow()) {
         MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -137,4 +135,18 @@ fun Context.getFileUri(file: File): Uri {
     } else {
         MediaStore.Files.getContentUri("external")
     }
+}
+
+// these functions update the mediastore instantly, MediaScannerConnection.scanFile takes some time to really get applied
+fun Context.deleteFromMediaStore(file: File) = contentResolver.delete(getFileUri(file), "${MediaStore.MediaColumns.DATA} = '${file.absolutePath}'", null) == 1
+
+fun Context.updateInMediaStore(oldFile: File, newFile: File): Boolean {
+    val values = ContentValues().apply {
+        put(MediaStore.MediaColumns.DATA, newFile.absolutePath)
+        put(MediaStore.MediaColumns.SIZE, newFile.length())
+        put(MediaStore.MediaColumns.DISPLAY_NAME, newFile.name)
+        put(MediaStore.MediaColumns.TITLE, newFile.name)
+    }
+    val uri = getFileUri(oldFile)
+    return contentResolver.update(uri, values, "${MediaStore.MediaColumns.DATA} = '${oldFile.absolutePath}'", null) == 1
 }
