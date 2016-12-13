@@ -25,7 +25,7 @@ fun Context.toast(msg: String, duration: Int = Toast.LENGTH_SHORT) = Toast.makeT
 
 @TargetApi(Build.VERSION_CODES.LOLLIPOP)
 fun Context.getSDCardPath(): String {
-    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP || !hasExternalSDCard()) {
         return ""
     }
 
@@ -39,6 +39,34 @@ fun Context.getSDCardPath(): String {
         }
     }
     return ""
+}
+
+// http://stackoverflow.com/a/13648873/1967672
+// dont try to understand, just copy it
+fun Context.hasExternalSDCard(): Boolean {
+    val reg = "(?i).*vold.*(vfat|ntfs|exfat|fat32|ext3|ext4).*rw.*"
+    var s = ""
+    try {
+        val process = ProcessBuilder().command("mount").redirectErrorStream(true).start()
+        process.waitFor()
+        val inputStream = process.inputStream
+        val buffer = ByteArray(1024)
+        while (inputStream.read(buffer) !== -1) {
+            s += String(buffer)
+        }
+        inputStream.close()
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+
+    val lines = s.split("\n".toRegex()).dropLastWhile(String::isEmpty).toTypedArray()
+    lines.filter { !it.toLowerCase(Locale.US).contains("asec") && it.matches(reg.toRegex()) }
+            .map { it.split(" ".toRegex()).dropLastWhile(String::isEmpty).toTypedArray() }
+            .forEach {
+                it.filter { it.startsWith("/") && !it.toLowerCase(Locale.US).contains("vold") }
+                        .forEach { return true }
+            }
+    return false
 }
 
 fun Context.getHumanReadablePath(path: String): String {
