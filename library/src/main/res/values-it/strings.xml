@@ -6,8 +6,8 @@
     <string name="smtfp_no_permission">Debug: autorizzazione lettura Archiviazione mancante</string>
     <string name="smtfp_confirm_storage_access_title">Conferma l\'accesso all\'archivio esterno</string>
     <string name="smtfp_confirm_storage_access_text">Scegli la root della scheda SD nella prossima schermata, per consentire i permessi di scrittura</string>
-    <string name="smtfp_proceed_with_deletion">Are you sure you want to proceed with the deletion?</string>
-    <string name="smtfp_yes">Yes</string>
+    <string name="smtfp_proceed_with_deletion">Sei sicuro di procedere con l\'eliminazione?</string>
+    <string name="smtfp_yes">Sì</string>
     <string name="smtfp_no">No</string>
 
     <!-- Storages -->
