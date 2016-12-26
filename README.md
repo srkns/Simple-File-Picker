@@ -1,5 +1,7 @@
 # Simple File Picker
 A simple file and directory picker library.
+# Deprecated
+Everything has been merged into https://github.com/SimpleMobileTools/Simple-Commons
 
 [ ![Download](https://api.bintray.com/packages/simplelibraries/filepicker/filepicker/images/download.svg) ](https://bintray.com/simplelibraries/filepicker/filepicker/_latestVersion)
 
